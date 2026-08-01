@@ -1031,6 +1031,17 @@ a{color:var(--brand);text-decoration:none;}
 
   .brand-lockup{display:block;width:min(430px,92%);margin:0 auto .5rem;}
 </style>
+<style>
+  /* Defense App section (#defense-app) */
+  .da-shot{margin:2rem 0 0}
+  .da-shot img{width:100%;max-width:100%;height:auto;display:block;
+    border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 34px rgba(0,0,0,.10)}
+  .da-shot figcaption{margin-top:.7rem;font-size:.9rem;line-height:1.55;color:var(--muted)}
+  .da-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.1rem;margin-top:2rem}
+  .da-cmd{margin:.8rem 0 0;padding:.75rem .85rem;background:rgba(0,0,0,.045);
+    border-radius:8px;overflow-x:auto;font-size:.82rem;line-height:1.6}
+  .da-cmd code{white-space:pre}
+</style>
 <style id="bgfix-2607">body{background:transparent !important;}html{background:var(--paper);}</style></head>
 <body>
 <div id="vnmark" aria-hidden="true"><svg viewBox="-12 -46 604 650" xmlns="http://www.w3.org/2000/svg" overflow="visible">
@@ -1079,6 +1090,7 @@ a{color:var(--brand);text-decoration:none;}
       <a href="#forest" data-i18n data-en="Forest" data-vi="Biểu đồ">Forest</a>
       <a href="#atlas" data-i18n data-en="Atlas" data-vi="Bản đồ">Atlas</a>
       <a href="#tool" data-i18n data-en="Tool" data-vi="Công cụ">Tool</a>
+      <a href="#defense-app" data-i18n data-en="Console" data-vi="Bảng điều khiển">Console</a>
       <a href="#access" data-i18n data-en="Source" data-vi="Mã nguồn">Source</a>
     </nav>
     <div class="hdr-right">
@@ -1859,6 +1871,37 @@ a{color:var(--brand);text-decoration:none;}
     </section>
 
   </div></section>
+
+  <!-- DEFENSE APP -->
+  <section class="sec" id="defense-app">
+    <div class="wrap">
+      <span class="eyebrow" data-i18n data-en="The live console" data-vi="Bảng điều khiển chạy thật">The live console</span>
+      <h2 data-i18n data-en="The same pipeline, running on a laptop." data-vi="Vẫn quy trình đó, chạy trên một máy tính xách tay.">The same pipeline, running on a laptop.</h2>
+      <p class="intro" data-i18n data-en="The demo above runs entirely in this browser. The screenshot below is the real console: a FastAPI backend serving the verification workflow over a live API, with the study store persisted to disk so records survive a restart. It runs locally, without Internet, which is why it is the version used in front of an examining committee." data-vi="Bản demo phía trên chạy hoàn toàn trong trình duyệt này. Ảnh bên dưới là bảng điều khiển thật: một backend FastAPI phục vụ quy trình kiểm chứng qua API sống, với kho nghiên cứu lưu xuống đĩa nên bản ghi sống sót qua một lần khởi động lại. Nó chạy cục bộ, không cần Internet, và vì vậy đây là bản dùng khi trình bày trước hội đồng.">The demo above runs entirely in this browser. The screenshot below is the real console: a FastAPI backend serving the verification workflow over a live API, with the study store persisted to disk so records survive a restart. It runs locally, without Internet, which is why it is the version used in front of an examining committee.</p>
+
+      <figure class="da-shot">
+        <img src="assets/img/defense-app-screenshot.png" width="2880" height="1800" loading="lazy" decoding="async"
+             alt="M-AIDA live verification console showing 18 effect records, 15 locked and 3 awaiting human review, above a study table listing each record with its country, sample size, correlation and conversion route." />
+        <figcaption data-i18n data-en="The console seeded with a sample of the verified corpus: 18 effect records, 15 locked, 3 still awaiting human review. Every row states the route by which its correlation was obtained." data-vi="Bảng điều khiển được nạp một mẫu của bộ dữ liệu đã kiểm chứng: 18 mức độ ảnh hưởng, 15 đã khóa, 3 còn chờ người kiểm tra. Mỗi dòng ghi rõ hệ số tương quan của nó đến từ đường nào.">The console seeded with a sample of the verified corpus: 18 effect records, 15 locked, 3 still awaiting human review. Every row states the route by which its correlation was obtained.</figcaption>
+      </figure>
+
+      <div class="da-grid">
+        <div class="card">
+          <div class="fn" data-i18n data-en="Why it is not hosted here" data-vi="Vì sao không đặt trên trang này">Why it is not hosted here</div>
+          <div class="fd" data-i18n data-en="This site is served as static files, which cannot run a Python server. Publishing the console here would show the interface while every action behind it failed. It is therefore distributed as source and run locally." data-vi="Trang này được phục vụ dưới dạng tệp tĩnh, vốn không chạy được một máy chủ Python. Đưa bảng điều khiển lên đây sẽ hiện ra giao diện trong khi mọi thao tác phía sau đều lỗi. Vì vậy nó được phân phối dưới dạng mã nguồn và chạy cục bộ.">This site is served as static files, which cannot run a Python server. Publishing the console here would show the interface while every action behind it failed. It is therefore distributed as source and run locally.</div>
+        </div>
+        <div class="card">
+          <div class="fn" data-i18n data-en="Run it yourself" data-vi="Tự chạy thử">Run it yourself</div>
+          <div class="fd" data-i18n data-en="The Defense App page carries the full instructions, the six-minute demonstration script and the fallback path for when the network or the model provider is unavailable." data-vi="Trang Defense App có hướng dẫn đầy đủ, kịch bản trình diễn sáu phút và đường lui khi mạng hoặc nhà cung cấp mô hình không khả dụng.">The Defense App page carries the full instructions, the six-minute demonstration script and the fallback path for when the network or the model provider is unavailable.</div>
+          <p style="margin:.9rem 0 0"><a class="cta-more" href="defense.html"><span data-i18n data-en="Open the Defense App page" data-vi="Mở trang Defense App">Open the Defense App page</span> &#8594;</a></p>
+        </div>
+        <div class="card">
+          <div class="fn" data-i18n data-en="What needs a key, and what does not" data-vi="Cái gì cần khóa API, cái gì không">What needs a key, and what does not</div>
+          <div class="fd" data-i18n data-en="Browsing, filtering, verifying, locking and CSV export all run without any external service. Only reading a new PDF calls a language model, and without a key the server says so plainly rather than inventing a result." data-vi="Duyệt, lọc, kiểm chứng, khóa và xuất CSV đều chạy mà không cần dịch vụ bên ngoài nào. Chỉ việc đọc một tệp PDF mới mới gọi tới mô hình ngôn ngữ, và khi không có khóa thì máy chủ nói thẳng điều đó thay vì bịa ra một kết quả.">Browsing, filtering, verifying, locking and CSV export all run without any external service. Only reading a new PDF calls a language model, and without a key the server says so plainly rather than inventing a result.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ACCESS -->
   <section class="sec" id="access">
