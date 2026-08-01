@@ -79,7 +79,7 @@ def seed(*, reset: bool = False) -> tuple[int, int]:
             if r.get("include_flag", "1").strip() != "0"]
     for row in rows:
         entry = _entry_from_row(row)
-        main._studies[entry.study_id] = entry
+        main._studies.put(entry)
     return counts()
 
 
@@ -105,7 +105,7 @@ def restore_or_seed() -> tuple[int, int]:
             main._studies.clear()
             for item in payload:
                 entry = StudyDatabaseEntry(**item)
-                main._studies[entry.study_id] = entry
+                main._studies.put(entry)
             return counts()
         except (OSError, ValueError, TypeError):
             print("Warning: saved demo state was invalid; restoring the verified seed.")
