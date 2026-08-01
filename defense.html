@@ -29,6 +29,15 @@ section{padding:38px 0}h2{font:clamp(30px,4vw,46px)/1.1 var(--serif);margin:0 0 
 </header>
 <section class="wrap"><h2>Một hệ sinh thái, ba chế độ</h2><p class="sub">Các phiên bản phục vụ mục đích khác nhau và không được trình bày như một SaaS đã hoàn thiện khi hạ tầng thương mại còn ở giai đoạn pilot.</p>
 <div class="modes"><article class="card"><span class="status">Available</span><h3>Academic Demo</h3><p>Bản công khai trên GitHub Pages để giới thiệu phương pháp, dữ liệu tổng hợp và trải nghiệm nghiên cứu.</p></article><article class="card"><span class="status">Operational</span><h3>Defense App</h3><p>Ứng dụng cục bộ có Presenter PIN, lưu trạng thái, reset seed, API thật và quy trình Verify–Lock–Export.</p></article><article class="card"><span class="status pilot">Pilot</span><h3>M-AIDA Cloud</h3><p>Định hướng thương mại hóa, dual licensing và các gói cá nhân, nhóm nghiên cứu, tổ chức.</p></article></div></section>
+<figure style="margin:2.2rem auto 0;max-width:1100px;padding:0 1.2rem">
+  <img src="assets/img/defense-app-screenshot.png" width="2880" height="1800" loading="lazy" decoding="async"
+       style="width:100%;max-width:100%;height:auto;display:block;border:1px solid rgba(0,0,0,.10);border-radius:10px;box-shadow:0 12px 34px rgba(0,0,0,.10)"
+       alt="M-AIDA live verification console: 18 effect records, 15 locked, 3 awaiting human review, above a table of studies with country, sample size, correlation and conversion route." />
+  <figcaption style="margin-top:.7rem;font-size:.9rem;line-height:1.55;opacity:.78">
+    Bảng điều khiển chạy thật với một mẫu của bộ dữ liệu đã kiểm chứng: 18 mức độ ảnh hưởng, 15 đã khóa, 3 còn chờ người kiểm tra. Ảnh chụp trực tiếp từ bản đang chạy, không phải ảnh dựng.
+  </figcaption>
+</figure>
+
 <section class="wrap"><h2>Luồng trình diễn trước hội đồng</h2><p class="sub">Một kịch bản sáu phút, có đường lui khi mạng hoặc nhà cung cấp LLM không khả dụng.</p>
 <div class="steps"><article class="card step"><h3>Khám phá dữ liệu</h3><p>Lọc bản ghi locked và pending trong bộ P6 mẫu đã kiểm chứng.</p></article><article class="card step"><h3>Đối chiếu</h3><p>So sánh machine proposal với giá trị hiện hành và nguồn thống kê.</p></article><article class="card step"><h3>Xác minh và khóa</h3><p>Nhập ghi chú PI, phê duyệt và chứng minh khóa bất biến bằng phản hồi API.</p></article><article class="card step"><h3>Xuất tái lập</h3><p>Xuất CSV chỉ gồm các bản ghi đã khóa và mở OpenAPI documentation.</p></article></div>
 <div class="notice"><strong>Ranh giới minh bạch:</strong> GitHub Pages chỉ hiển thị trang giới thiệu này và academic demo. Presenter PIN, Reset, Verify và Lock không được mở trên website công khai. Chúng chạy trong Defense App cục bộ để bảo vệ tính toàn vẹn dữ liệu.</div></section>
