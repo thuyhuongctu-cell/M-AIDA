@@ -23,6 +23,8 @@ jobs:
         run: pytest tests -q
       - name: Defense App smoke test
         run: python demo/smoke_test.py
+      - name: Public-site research metrics guard
+        run: python scripts/check_site_metrics.py
 
   frontend:
     runs-on: ubuntu-latest
