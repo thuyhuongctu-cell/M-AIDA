@@ -56,14 +56,18 @@ the live API.
 ```bash
 pip install -r backend/requirements.txt
 python demo/run_defense.py
+# Windows one-click alternative: demo\\start_defense_windows.bat
+# macOS/Linux alternative: sh demo/start_defense_unix.sh
 # open http://localhost:8765/  (interactive API docs at /docs)
 ```
 
 Seeding rules and options (full-database seed, lock-all mode) are documented in
 `demo/run_defense.py`; a Vietnamese walkthrough for the defense session is in
-`demo/HUONG_DAN_BAO_VE.md`. Live PDF extraction additionally requires
-`LLM_API_KEY` in `backend/.env`; without it the extraction endpoint returns an
-explicit 503 and all other features work offline.
+`demo/HUONG_DAN_BAO_VE.md`. The Defense App persists session changes locally, protects all mutations with a
+presenter PIN printed at startup, and can reset to the verified P6 seed. Live PDF
+extraction additionally requires `LLM_API_KEY` in `backend/.env`; without it the
+extraction endpoint returns an explicit 503 and verification, locking, filtering,
+reset, and CSV export continue to work offline.
 
 ## Production deployment
 
