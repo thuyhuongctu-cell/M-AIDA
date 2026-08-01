@@ -7,7 +7,10 @@ import os
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]\nsys.path.insert(0, str(ROOT))\n\nos.environ["MAIDA_DEMO_PIN"] = "ci-presenter-pin"
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+os.environ["MAIDA_DEMO_PIN"] = "ci-presenter-pin"
 os.environ["MAIDA_DEMO_STATE"] = str(Path(tempfile.gettempdir()) / "maida-defense-ci.json")
 os.environ["MAIDA_DEMO_PERSIST"] = "0"
 
