@@ -17,12 +17,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r backend/requirements.txt pytest ruff
       - name: Lint (syntax errors and undefined names)
-        run: ruff check backend demo --select E9,F
+        run: ruff check backend demo validation --select E9,F
       - name: Unit tests
         working-directory: backend
         run: pytest tests -q
       - name: Defense App smoke test
         run: python demo/smoke_test.py
+      - name: Independent-validation analysis tests
+        run: pytest validation/tests -q
       - name: Public-site research metrics guard
         run: python scripts/check_site_metrics.py
 

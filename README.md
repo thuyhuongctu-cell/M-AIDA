@@ -85,6 +85,10 @@ cd backend
 pip install -e ".[test]"
 pytest -q
 
+# Independent-validation analysis tests (synthetic fixtures only)
+cd ..
+pytest -q validation/tests
+
 # Frontend (Vite): dev server / production build
 cd frontend
 npm ci
@@ -95,6 +99,14 @@ npm run build    # outputs to build/
 CI runs the backend test suite and the frontend Vite build on every change.
 Set `VITE_API_URL` (see `frontend/.env.example`) to point the client at a
 non-default backend URL.
+
+The executable independent-validation package is in [`validation/`](validation/),
+with the preregister-before-running design in
+[`VALIDATION_PROTOCOL.md`](VALIDATION_PROTOCOL.md). Its templates separate two
+human coders, the adjudicated gold standard, untouched machine proposals, and
+PI verification time. No product-accuracy claim is made until real frozen
+inputs and generated results are archived; synthetic CI fixtures only verify
+the metric calculations.
 
 ## API Routes
 
