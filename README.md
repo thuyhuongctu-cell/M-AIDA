@@ -131,6 +131,10 @@ The repository is also served as a static site (GitHub Pages):
 - **Main page** ([index.html](https://thuyhuongctu.github.io/M-AIDA/)): overview,
   positioning, the interactive atlas of 236 studies, the in-browser extraction
   console, and the Huong AI tour guide. Bilingual EN/VI.
+- **Defense App** ([defense.html](https://thuyhuongctu.github.io/M-AIDA/defense.html)):
+  public explanation of the presenter-controlled local application, its
+  Academic Demo / Defense App / Cloud boundaries, rehearsal flow, and launch
+  instructions. Verify, Lock, and Reset remain local rather than public.
 - **Commercial page** ([commercial.html](https://thuyhuongctu.github.io/M-AIDA/commercial.html)):
   productization and licensing overview.
 - **Data & Melody** ([data_melody.html](https://thuyhuongctu.github.io/M-AIDA/data_melody.html)):
