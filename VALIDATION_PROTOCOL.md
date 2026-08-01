@@ -107,5 +107,8 @@ bất lợi.
 3. Cập nhật tiểu mục validation trong Phụ lục B của luận án, dẫn kết quả từ
    báo cáo trên.
 
-**Trạng thái hiện tại:** protocol và mã phân tích đã sẵn sàng; kiểm định độc
-lập chưa hoàn tất, vì vậy chưa có tuyên bố accuracy/efficiency của M-AIDA.
+**Trạng thái hiện tại:** protocol, mã phân tích và sampling frame sơ bộ gồm 40
+bài chính + 10 bài dự phòng đã sẵn sàng. Sampling frame vẫn `PROVISIONAL` cho
+đến khi xác nhận đủ full text và không có bài nào từng dùng để phát triển hoặc
+tinh chỉnh M-AIDA. Kiểm định độc lập chưa hoàn tất, vì vậy chưa có tuyên bố
+accuracy/efficiency của M-AIDA.

@@ -108,6 +108,13 @@ PI verification time. No product-accuracy claim is made until real frozen
 inputs and generated results are archived; synthetic CI fixtures only verify
 the metric calculations.
 
+Execution status: the repository now includes a deterministic provisional
+sampling frame of 40 PRIMARY studies plus 10 RESERVE studies in
+[`validation/sampling/`](validation/sampling/). Defense-demo studies and every
+study flagged `is_estimated` in the P6 database are excluded. The frame is not
+locked until full-text availability and non-use in M-AIDA development are
+confirmed for every PRIMARY study; the freeze command enforces both gates.
+
 ## API Routes
 
 | Method | Path | Description |
