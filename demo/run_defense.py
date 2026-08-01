@@ -29,7 +29,7 @@ PERSIST = os.environ.get("MAIDA_DEMO_PERSIST", "1") != "0"
 PRESENTER_PIN = os.environ.get("MAIDA_DEMO_PIN") or secrets.token_urlsafe(4)
 UI_FILE = ROOT / "demo" / "ui.html"
 MANIFEST_FILE = ROOT / "demo" / "manifest.webmanifest"
-SW_FILE = ROOT / "demo" / "sw.js"
+SW_FILE = ROOT / "demo" / "sw.js"\nICON_FILE = ROOT / "demo" / "icon.svg"
 
 PROVENANCE = (
     "Imported from the PI-locked P6 analysis database of the dissertation "
@@ -137,6 +137,11 @@ def demo_manifest() -> FileResponse:
 @main.app.get("/sw.js", include_in_schema=False)
 def demo_service_worker() -> FileResponse:
     return FileResponse(SW_FILE, media_type="application/javascript")
+
+
+@main.app.get("/demo-icon.svg", include_in_schema=False)
+def demo_icon() -> FileResponse:
+    return FileResponse(ICON_FILE, media_type="image/svg+xml")
 
 
 @main.app.post("/api/demo/reset", tags=["demo"])
