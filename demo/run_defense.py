@@ -29,7 +29,8 @@ PERSIST = os.environ.get("MAIDA_DEMO_PERSIST", "1") != "0"
 PRESENTER_PIN = os.environ.get("MAIDA_DEMO_PIN") or secrets.token_urlsafe(4)
 UI_FILE = ROOT / "demo" / "ui.html"
 MANIFEST_FILE = ROOT / "demo" / "manifest.webmanifest"
-SW_FILE = ROOT / "demo" / "sw.js"\nICON_FILE = ROOT / "demo" / "icon.svg"
+SW_FILE = ROOT / "demo" / "sw.js"
+ICON_FILE = ROOT / "demo" / "icon.svg"
 
 PROVENANCE = (
     "Imported from the PI-locked P6 analysis database of the dissertation "
