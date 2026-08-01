@@ -16,7 +16,7 @@ BACKEND = ROOT / "backend"
 sys.path.insert(0, str(BACKEND))
 os.chdir(BACKEND)
 
-from fastapi import HTTPException, Request  # noqa: E402
+from fastapi import Request  # noqa: E402
 from fastapi.responses import FileResponse, JSONResponse  # noqa: E402
 
 import main  # noqa: E402
