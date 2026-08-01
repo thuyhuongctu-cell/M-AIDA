@@ -87,7 +87,7 @@ pytest -q
 
 # Independent-validation analysis tests (synthetic fixtures only)
 cd ..
-pytest -q validation/tests
+python -m pytest -q validation/tests
 
 # Frontend (Vite): dev server / production build
 cd frontend
