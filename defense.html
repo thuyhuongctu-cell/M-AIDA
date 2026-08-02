@@ -27,9 +27,9 @@ section{padding:38px 0}h2{font:clamp(30px,4vw,46px)/1.1 var(--serif);margin:0 0 
 <div class="actions"><a class="btn primary" href="https://github.com/thuyhuongctu/M-AIDA/tree/main/demo">Tải và chạy Defense App</a><a class="btn" href="index.html#tool">Mở demo công khai</a><a class="btn dark" href="commercial.html">Xem bản thương mại</a></div>
 <div class="metrics"><div class="metric"><b>236</b><span>nghiên cứu trong corpus P6 đã khóa</span></div><div class="metric"><b>286</b><span>effect sizes</span></div><div class="metric"><b>35</b><span>backend tests</span></div><div class="metric"><b>Offline</b><span>Verify · Lock · Export không cần live LLM</span></div></div>
 </header>
-<section class="wrap"><h2>Một hệ sinh thái, ba chế độ</h2><p class="sub">Các phiên bản phục vụ mục đích khác nhau và không được trình bày như một SaaS đã hoàn thiện khi hạ tầng thương mại còn ở giai đoạn pilot.</p>
+<section class="wrap" id="modes"><h2>Một hệ sinh thái, ba chế độ</h2><p class="sub">Các phiên bản phục vụ mục đích khác nhau và không được trình bày như một SaaS đã hoàn thiện khi hạ tầng thương mại còn ở giai đoạn pilot.</p>
 <div class="modes"><article class="card"><span class="status">Available</span><h3>Academic Demo</h3><p>Bản công khai trên GitHub Pages để giới thiệu phương pháp, dữ liệu tổng hợp và trải nghiệm nghiên cứu.</p></article><article class="card"><span class="status">Operational</span><h3>Defense App</h3><p>Ứng dụng cục bộ có Presenter PIN, lưu trạng thái, reset seed, API thật và quy trình Verify–Lock–Export.</p></article><article class="card"><span class="status pilot">Pilot</span><h3>M-AIDA Cloud</h3><p>Định hướng thương mại hóa, dual licensing và các gói cá nhân, nhóm nghiên cứu, tổ chức.</p></article></div></section>
-<section class="wrap"><h2>Kiểm định không vòng lặp</h2><p class="sub">M-AIDA là công cụ chuẩn bị dữ liệu hỗ trợ P6, không phải bằng chứng thay thế cho P6. Một benchmark độc lập 30–50 bài được khóa trước theo tuyến direct r, t→r và beta→r.</p>
+<section class="wrap" id="validation"><h2>Kiểm định không vòng lặp</h2><p class="sub">M-AIDA là công cụ chuẩn bị dữ liệu hỗ trợ P6, không phải bằng chứng thay thế cho P6. Một benchmark độc lập 30–50 bài được khóa trước theo tuyến direct r, t→r và beta→r.</p>
 <div class="modes"><article class="card"><span class="status">Ready</span><h3>Protocol và mã phân tích</h3><p>Schema chuẩn vàng hai coder, script tính precision/recall/F1, sai số r, correction, provenance và thời gian đã có trong repository.</p></article><article class="card"><span class="status pilot">Provisional</span><h3>Mẫu 40 + 10 dự phòng</h3><p>Sampling frame đã tạo theo DPL × ICRV nhưng chưa khóa; còn phải xác nhận full text và loại mọi bài từng dùng để chỉnh M-AIDA.</p></article><article class="card"><span class="status">Boundary</span><h3>Không thay thế luận án</h3><p>Chưa công bố accuracy/time-saving. Benchmark không đánh giá screening, risk-of-bias, mô hình meta-analysis hoặc diễn giải kết quả P6.</p></article></div>
 <div class="actions"><a class="btn" href="https://github.com/thuyhuongctu/M-AIDA/blob/main/VALIDATION_PROTOCOL.md">Xem validation protocol</a><a class="btn" href="https://github.com/thuyhuongctu/M-AIDA/tree/main/validation">Mở analysis package</a></div></section>
 <figure style="margin:2.2rem auto 0;max-width:1100px;padding:0 1.2rem">
@@ -41,7 +41,7 @@ section{padding:38px 0}h2{font:clamp(30px,4vw,46px)/1.1 var(--serif);margin:0 0 
   </figcaption>
 </figure>
 
-<section class="wrap"><h2>Luồng trình diễn trước hội đồng</h2><p class="sub">Một kịch bản sáu phút, có đường lui khi mạng hoặc nhà cung cấp LLM không khả dụng.</p>
+<section class="wrap" id="flow"><h2>Luồng trình diễn trước hội đồng</h2><p class="sub">Một kịch bản sáu phút, có đường lui khi mạng hoặc nhà cung cấp LLM không khả dụng.</p>
 <div class="steps"><article class="card step"><h3>Khám phá dữ liệu</h3><p>Lọc bản ghi locked và pending trong bộ P6 mẫu đã kiểm chứng.</p></article><article class="card step"><h3>Đối chiếu</h3><p>So sánh machine proposal với giá trị hiện hành và nguồn thống kê.</p></article><article class="card step"><h3>Xác minh và khóa</h3><p>Nhập ghi chú PI, phê duyệt và chứng minh khóa bất biến bằng phản hồi API.</p></article><article class="card step"><h3>Xuất tái lập</h3><p>Xuất CSV chỉ gồm các bản ghi đã khóa và mở OpenAPI documentation.</p></article></div>
 <div class="notice"><strong>Ranh giới minh bạch:</strong> GitHub Pages chỉ hiển thị trang giới thiệu này và academic demo. Presenter PIN, Reset, Verify và Lock không được mở trên website công khai. Chúng chạy trong Defense App cục bộ để bảo vệ tính toàn vẹn dữ liệu.</div></section>
 <section class="wrap"><h2>Chạy nhanh</h2><p class="sub">Windows có launcher một lần nhấp. macOS và Linux sử dụng script đi kèm.</p>
@@ -52,5 +52,20 @@ Open: http://localhost:8765/</div>
 <div class="actions"><a class="btn primary" href="https://github.com/thuyhuongctu/M-AIDA/blob/main/demo/HUONG_DAN_BAO_VE.md">Hướng dẫn bảo vệ</a><a class="btn" href="https://github.com/thuyhuongctu/M-AIDA">Mã nguồn và citation</a></div></section>
 </main>
 <footer class="footer"><div class="wrap">M-AIDA · Meta-Analysis Intelligent Data Assistant · Do Thuy Huong &amp; Phan Anh Tu · Version 7.1.1 · DOI 10.5281/zenodo.21282516</div></footer>
+<link rel="stylesheet" href="assets/tour.css">
+<script>
+/* Hương AI guided tour. Stops are declared here; assets/tour.js drives them and
+   reads the narration from voice/defense/ when those recordings are published. */
+window.MAIDA_TOUR={
+  slug:"defense", mount:".navlinks",
+  stops:[
+    {sel:".hero", en:"This is the Defense App: a presenter-controlled demonstration of the M-AIDA workflow. The principle on the page is the principle of the whole project. AI proposes, researchers verify.", vi:"\u0110\u00e2y l\u00e0 Defense App: b\u1ea3n tr\u00ecnh di\u1ec5n c\u00f3 ki\u1ec3m so\u00e1t c\u1ee7a quy tr\u00ecnh M-AIDA. Nguy\u00ean t\u1eafc ghi tr\u00ean trang c\u0169ng l\u00e0 nguy\u00ean t\u1eafc c\u1ee7a c\u1ea3 d\u1ef1 \u00e1n. M\u00e1y \u0111\u1ec1 xu\u1ea5t, ng\u01b0\u1eddi nghi\u00ean c\u1ee9u ki\u1ec3m ch\u1ee9ng."},
+    {sel:"#modes", en:"One ecosystem, three modes. The public academic demo, this Defense App running a real backend locally, and the commercial cloud, which is still a pilot and is labelled as one.", vi:"M\u1ed9t h\u1ec7 sinh th\u00e1i, ba ch\u1ebf \u0111\u1ed9. B\u1ea3n demo h\u1ecdc thu\u1eadt c\u00f4ng khai, Defense App ch\u1ea1y backend th\u1eadt \u1edf m\u00e1y c\u1ee5c b\u1ed9, v\u00e0 b\u1ea3n th\u01b0\u01a1ng m\u1ea1i v\u1eabn \u0111ang \u1edf giai \u0111o\u1ea1n pilot v\u00e0 \u0111\u01b0\u1ee3c ghi r\u00f5 nh\u01b0 v\u1eady."},
+    {sel:"#validation", en:"Validation without circularity. M-AIDA prepares the data for the P6 study; it is not evidence in place of P6. The benchmark is locked in advance, and no paper used to tune the software may enter it.", vi:"Ki\u1ec3m \u0111\u1ecbnh kh\u00f4ng v\u00f2ng l\u1eb7p. M-AIDA chu\u1ea9n b\u1ecb d\u1eef li\u1ec7u cho nghi\u00ean c\u1ee9u P6, ch\u1ee9 kh\u00f4ng ph\u1ea3i b\u1eb1ng ch\u1ee9ng thay cho P6. Benchmark \u0111\u01b0\u1ee3c kh\u00f3a tr\u01b0\u1edbc, v\u00e0 kh\u00f4ng b\u00e0i n\u00e0o t\u1eebng d\u00f9ng \u0111\u1ec3 ch\u1ec9nh ph\u1ea7n m\u1ec1m \u0111\u01b0\u1ee3c \u0111\u01b0a v\u00e0o."},
+    {sel:"#flow", en:"And this is the six-minute run for the committee: explore the data, cross-check it, verify and lock a record, then export something reproducible. Every step has a fallback if the network or the model is unavailable.", vi:"V\u00e0 \u0111\u00e2y l\u00e0 k\u1ecbch b\u1ea3n s\u00e1u ph\u00fat tr\u01b0\u1edbc h\u1ed9i \u0111\u1ed3ng: kh\u00e1m ph\u00e1 d\u1eef li\u1ec7u, \u0111\u1ed1i chi\u1ebfu, x\u00e1c minh r\u1ed3i kh\u00f3a m\u1ed9t b\u1ea3n ghi, sau \u0111\u00f3 xu\u1ea5t ra th\u1ee9 t\u00e1i l\u1eadp \u0111\u01b0\u1ee3c. M\u1ed7i b\u01b0\u1edbc \u0111\u1ec1u c\u00f3 \u0111\u01b0\u1eddng lui n\u1ebfu m\u1ea1ng ho\u1eb7c m\u00f4 h\u00ecnh kh\u00f4ng kh\u1ea3 d\u1ee5ng."}
+  ]
+};
+</script>
+<script src="assets/tour.js" defer></script>
 </body>
 </html>

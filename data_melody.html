@@ -542,9 +542,9 @@
   ];
   var g=document.getElementById('hguide'), img=document.getElementById('hguideImg'),
       bub=document.getElementById('hbubble'), btx=document.getElementById('hbubbleTxt'), stopBtn=document.getElementById('hstop');
-  var running=false, timers=[], mTimer=null, scale=[0,2,4,7,9,12,9,7], si=0;
+  var running=false, timers=[], mTimer=null, scale=[0,2,4,7,9,12,9,7], si=0, cancelVoice=null;
   function tick(){ tone(261.63*Math.pow(2,scale[si%scale.length]/12),0.5); si++; }
-  function clearAll(){ timers.forEach(clearTimeout); timers=[]; if(mTimer){clearInterval(mTimer);mTimer=null;} }
+  function clearAll(){ timers.forEach(clearTimeout); timers=[]; if(mTimer){clearInterval(mTimer);mTimer=null;} if(cancelVoice){cancelVoice();cancelVoice=null;} }
   function walkTo(i){
     if(!running||i>=STOPS.length){ finish(); return; }
     var s=STOPS[i]; bub.classList.remove('on'); g.classList.add('walking');
@@ -553,7 +553,10 @@
     timers.push(setTimeout(function(){
       g.classList.remove('walking'); img.src=POSES[s.pose]||POSES.greeting;
       btx.textContent=(s[lang]||s.en); bub.classList.add('on');
-      timers.push(setTimeout(function(){ walkTo(i+1); },3200));
+      // Advance when Hương AI finishes speaking; if the clip is not published
+      // yet, MaidaTourVoice falls back to the original 3.2 s reading pace.
+      if(window.MaidaTourVoice){ cancelVoice=window.MaidaTourVoice('melody',i,function(){ walkTo(i+1); },3200); }
+      else { timers.push(setTimeout(function(){ walkTo(i+1); },3200)); }
     },1300));
   }
   function finish(){ running=false; clearAll(); bub.classList.remove('on'); stopBtn.classList.remove('on'); g.classList.remove('walking');
@@ -823,5 +826,6 @@
 <script>(function(){var r=document.documentElement,t=document.getElementById('dmTheme');if(!t)return;try{var s=localStorage.getItem('dm_theme');if(s)r.setAttribute('data-theme',s);}catch(e){}t.addEventListener('click',function(){var c=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',c);try{localStorage.setItem('dm_theme',c);}catch(e){}});})();</script>
 <script src="assets/mini-music.js" defer></script>
 <script src="assets/mini-guide.js" defer></script>
+<script src="assets/tour.js" defer></script>
 </body>
 </html>

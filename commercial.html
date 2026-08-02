@@ -516,14 +516,24 @@
     ]};
   function STOPS_CUR(){return STOPS_ALL[document.documentElement.getAttribute('lang')==='vi'?'vi':'en'];}
   var card=document.getElementById('hgCard'),txt=document.getElementById('hgTxt');
-  var i=-1,on=false;
-  function stopG(){on=false;card.classList.remove('show');}
+  var i=-1,on=false,cancelVoice=null;
+  function hush(){ if(cancelVoice){cancelVoice();cancelVoice=null;} }
+  function stopG(){on=false;hush();card.classList.remove('show');}
   function step(){
+    hush();
     i++;
     if(i>=STOPS_CUR().length){stopG();return;}
     var el=document.getElementById(STOPS_CUR()[i][0]);
     if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
     txt.textContent=STOPS_CUR()[i][1];
+    // Speak the stop and move on when the clip ends. Until the recordings are
+    // published MaidaTourVoice falls back to a reading-paced timer, so the tour
+    // still advances on its own instead of stalling on a silent stop.
+    if(on&&window.MaidaTourVoice){
+      var at=i;
+      cancelVoice=window.MaidaTourVoice('cloud',i,function(){ if(on&&i===at)step(); },
+        Math.max(4000,STOPS_CUR()[i][1].length*68));
+    }
   }
   document.getElementById('hgTour').addEventListener('click',function(){
     if(on){stopG();return;}
@@ -911,5 +921,6 @@
   <script data-goatcounter="https://thuyhuongctu.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
   <script src="assets/mini-guide.js" defer></script>
+<script src="assets/tour.js" defer></script>
 </body>
 </html>

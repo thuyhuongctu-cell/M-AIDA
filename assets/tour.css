@@ -1,0 +1,81 @@
+/* Hương AI guided tour — shared component for every page except index.html.
+ *
+ * index.html carries its own tour, wired into that page's poses, music ducking
+ * and atlas sweep. This file drives the simpler tour used everywhere else, so
+ * the two never have to be kept in sync.
+ *
+ * The pages this lands on look nothing alike: songs.html is dark plum, huong.html
+ * is light, defense.html is cream, commercial.html is white. So every rule below
+ * uses its own colours rather than the host page's custom properties — a tour
+ * that inherited them would come out unreadable on at least one page.
+ */
+
+.mtour-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:30px;padding:0;border-radius:8px;cursor:pointer;
+  border:1px solid rgba(138,74,88,.42);background:transparent;color:#a86675;
+  font-size:15px;line-height:1;
+}
+.mtour-btn:hover{background:rgba(138,74,88,.12)}
+.mtour-btn[aria-pressed="true"]{background:#8a4a58;border-color:#8a4a58;color:#fff}
+
+/* Floating fallback for pages with no header control cluster to mount into. */
+.mtour-btn.mtour-float{
+  position:fixed;right:16px;bottom:16px;z-index:2147483000;
+  width:46px;height:46px;border-radius:50%;font-size:20px;
+  background:#8a4a58;border-color:#8a4a58;color:#fff;
+  box-shadow:0 10px 26px -10px rgba(0,0,0,.55);
+}
+
+.mtour-card{
+  position:fixed;left:16px;bottom:16px;z-index:2147483000;
+  width:min(430px,calc(100vw - 32px));display:none;
+  background:#fffdf8;color:#201b1c;
+  border:1px solid #ded2c7;border-radius:14px;
+  box-shadow:0 22px 54px -26px rgba(0,0,0,.55);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+.mtour-card.mtour-show{display:block}
+
+.mtour-head{
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+  padding:.55rem .8rem;border-bottom:1px solid #ede3d8;
+}
+.mtour-tag{
+  font:700 .56rem 'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+  letter-spacing:.16em;text-transform:uppercase;color:#8a4a58;
+}
+.mtour-ctl{display:flex;gap:.7rem;align-items:center;flex:0 0 auto}
+.mtour-ctl button{
+  border:0;background:transparent;cursor:pointer;color:#6c6263;padding:0;
+  font:600 .62rem 'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+}
+.mtour-ctl button:hover{color:#8a4a58}
+.mtour-ctl button.mtour-muted{color:#8a4a58}
+
+.mtour-body{padding:.7rem .85rem .5rem;font-size:.88rem;line-height:1.55}
+
+/* Progress reads "3 / 6" so a presenter always knows how much is left. */
+.mtour-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+  padding:.1rem .85rem .6rem;
+}
+.mtour-step{font:600 .6rem 'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;color:#9a8f90}
+.mtour-dots{display:flex;gap:.3rem}
+.mtour-dots i{width:6px;height:6px;border-radius:50%;background:#e0d3c8;transition:background .2s}
+.mtour-dots i.mtour-on{background:#8a4a58}
+
+/* Highlight the section being narrated, without touching the page's own styles. */
+.mtour-focus{
+  outline:2px solid rgba(138,74,88,.55);outline-offset:5px;border-radius:6px;
+  transition:outline-color .3s;
+}
+
+@media (max-width:640px){
+  .mtour-card{left:8px;right:8px;bottom:8px;width:auto}
+  .mtour-btn.mtour-float{right:10px;bottom:10px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .mtour-focus{transition:none}
+}

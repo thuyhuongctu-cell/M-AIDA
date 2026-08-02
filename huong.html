@@ -606,4 +606,20 @@ html:not([lang="en"]) .lang-en{display:none}
 })();</script>
 <script src="assets/mini-music.js" defer></script>
 <script src="assets/mini-guide.js" defer></script>
+<link rel="stylesheet" href="assets/tour.css">
+<script>
+/* Hương AI guided tour. Stops are declared here; assets/tour.js drives them and
+   reads the narration from voice/huong/ when those recordings are published. */
+window.MAIDA_TOUR={
+  slug:"huong", mount:".langtog",
+  stops:[
+    {sel:"#about", en:"Bonjour \u00e0 tous! I am Do Thuy Huong, a lecturer and doctoral candidate. This page gathers my research, my teaching and the software I build, in one place.", vi:"Bonjour \u00e0 tous! T\u00f4i l\u00e0 \u0110\u1ed7 Th\u00f9y H\u01b0\u01a1ng, gi\u1ea3ng vi\u00ean v\u00e0 nghi\u00ean c\u1ee9u sinh. Trang n\u00e0y gom nghi\u00ean c\u1ee9u, vi\u1ec7c gi\u1ea3ng d\u1ea1y v\u00e0 ph\u1ea7n m\u1ec1m t\u00f4i x\u00e2y d\u1ef1ng v\u00e0o m\u1ed9t ch\u1ed7."},
+    {sel:"#pubs", en:"These are my publications. Each entry links out to the source, so you can check any claim on this page against the record rather than taking my word for it.", vi:"\u0110\u00e2y l\u00e0 c\u00e1c c\u00f4ng b\u1ed1 khoa h\u1ecdc c\u1ee7a t\u00f4i. M\u1ed7i m\u1ee5c \u0111\u1ec1u d\u1eabn t\u1edbi ngu\u1ed3n, n\u00ean b\u1ea1n c\u00f3 th\u1ec3 t\u1ef1 \u0111\u1ed1i chi\u1ebfu thay v\u00ec ph\u1ea3i tin l\u1eddi t\u00f4i."},
+    {sel:"#teaching", en:"Teaching and projects. M-AIDA came out of my own dissertation work, and BizOn grew out of the entrepreneurship classroom. Both are tools I needed before they existed.", vi:"Gi\u1ea3ng d\u1ea1y v\u00e0 d\u1ef1 \u00e1n. M-AIDA ra \u0111\u1eddi t\u1eeb ch\u00ednh c\u00f4ng vi\u1ec7c lu\u1eadn \u00e1n c\u1ee7a t\u00f4i, c\u00f2n BizOn l\u1edbn l\u00ean t\u1eeb l\u1edbp h\u1ecdc kh\u1edfi nghi\u1ec7p. C\u1ea3 hai \u0111\u1ec1u l\u00e0 c\u00f4ng c\u1ee5 t\u00f4i c\u1ea7n tr\u01b0\u1edbc khi ch\u00fang t\u1ed3n t\u1ea1i."},
+    {sel:"#worlddata", en:"This panel pulls live indicators from the World Bank, so you can put the economies in the dissertation next to each other and see the context the numbers sit in.", vi:"B\u1ea3ng n\u00e0y l\u1ea5y ch\u1ec9 s\u1ed1 tr\u1ef1c ti\u1ebfp t\u1eeb Ng\u00e2n h\u00e0ng Th\u1ebf gi\u1edbi, \u0111\u1ec3 b\u1ea1n \u0111\u1eb7t c\u00e1c n\u1ec1n kinh t\u1ebf trong lu\u1eadn \u00e1n c\u1ea1nh nhau v\u00e0 th\u1ea5y b\u1ed1i c\u1ea3nh c\u1ee7a nh\u1eefng con s\u1ed1."},
+    {sel:"#blog", en:"And the last section collects notes and press coverage, including why I built M-AIDA: let the machine read, but the researcher decides. Merci beaucoup!", vi:"V\u00e0 m\u1ee5c cu\u1ed1i t\u1eadp h\u1ee3p c\u00e1c ghi ch\u00e9p c\u00f9ng b\u00e0i b\u00e1o, trong \u0111\u00f3 c\u00f3 l\u00fd do t\u00f4i x\u00e2y M-AIDA: \u0111\u1ec3 m\u00e1y \u0111\u1ecdc, c\u00f2n ng\u01b0\u1eddi quy\u1ebft \u0111\u1ecbnh. Merci beaucoup!"}
+  ]
+};
+</script>
+<script src="assets/tour.js" defer></script>
 </body></html>
