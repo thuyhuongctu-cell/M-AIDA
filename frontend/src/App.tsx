@@ -1,24 +1,26 @@
 /**
  * M-AIDA v7.1.1 - Root application component.
  *
- * Two-tab layout:
+ * Three-workspace layout:
  *   1. Extract       - PDF upload and LLM extraction (ExtractionPanel)
- *   2. Verify & Lock - PI verification dashboard (VerificationDashboard + ExportPanel)
+ *   2. Evidence Atlas - descriptive research intelligence (ResearchIntelligence)
+ *   3. Verify & Lock - PI verification dashboard (VerificationDashboard + ExportPanel)
  */
 
 import { App as CapacitorApp } from "@capacitor/app";
 import { Share } from "@capacitor/share";
-import { ExternalLink, Share2 } from "lucide-react";
+import { ExternalLink, Network, Share2 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import ExportPanel from "./components/ExportPanel";
 import ExtractionPanel from "./components/ExtractionPanel";
+import ResearchIntelligence from "./components/ResearchIntelligence";
 import StatusBanner from "./components/StatusBanner";
 import { runtimeConfig } from "./config";
 import VerificationDashboard from "./components/VerificationDashboard";
 import { StudyDatabaseEntry } from "./types";
 import "./index.css";
 
-type Tab = "extract" | "verify";
+type Tab = "extract" | "verify" | "intelligence";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("extract");
@@ -46,7 +48,7 @@ export default function App() {
     if (!runtimeConfig.isNative || runtimeConfig.platform !== "android") return;
     let removeListener: (() => Promise<void>) | undefined;
     void CapacitorApp.addListener("backButton", ({ canGoBack }) => {
-      if (activeTab === "verify") setActiveTab("extract");
+      if (activeTab !== "extract") setActiveTab("extract");
       else if (canGoBack) window.history.back();
       else void CapacitorApp.minimizeApp();
     }).then((handle) => {
@@ -106,6 +108,15 @@ export default function App() {
         </button>
         <button
           role="tab"
+          aria-selected={activeTab === "intelligence"}
+          className={`tab-btn ${activeTab === "intelligence" ? "active" : ""}`}
+          onClick={() => setActiveTab("intelligence")}
+        >
+          <Network size={16} aria-hidden="true" />
+          Evidence Atlas
+        </button>
+        <button
+          role="tab"
           aria-selected={activeTab === "verify"}
           className={`tab-btn ${activeTab === "verify" ? "active" : ""}`}
           onClick={() => setActiveTab("verify")}
@@ -142,6 +153,8 @@ export default function App() {
             <ExportPanel />
           </div>
         )}
+
+        {activeTab === "intelligence" && <ResearchIntelligence />}
       </main>
 
       <footer className="app-footer">
