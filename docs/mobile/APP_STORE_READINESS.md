@@ -27,6 +27,7 @@ Run `npm run mobile:check` for an internal project check. `npm run mobile:releas
 - Android compiles and targets API 36; Google Play requires new submissions and updates to target Android 16 / API 36 from August 31, 2026.
 - Android release traffic is cleartext-disabled and app backup is disabled.
 - iOS includes an app-level privacy manifest, in addition to SDK manifests.
+- CI builds the unsigned iOS app for a generic simulator on a GitHub-hosted macOS runner. A signed archive and App Store validation still require the final Apple team, bundle ID, signing assets, and release approvals.
 - Native network status and the system share sheet provide device integration beyond a static website wrapper.
 - The backend allows the standard Capacitor WebView origins (`http://localhost` on Android and `capacitor://localhost` on iOS); production CORS must remain an explicit allow-list.
 

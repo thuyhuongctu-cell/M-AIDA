@@ -70,3 +70,36 @@ jobs:
       - name: Build Android debug package
         working-directory: frontend/android
         run: ./gradlew assembleDebug
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Build web assets
+        working-directory: frontend
+        run: npm run build
+      - name: Sync iOS project
+        working-directory: frontend
+        run: npx cap sync ios --deployment
+      - name: Inspect Xcode project
+        working-directory: frontend/ios/App
+        run: xcodebuild -list -project App.xcodeproj
+      - name: Build iOS simulator app
+        working-directory: frontend/ios/App
+        run: >-
+          xcodebuild
+          -project App.xcodeproj
+          -scheme App
+          -configuration Debug
+          -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
