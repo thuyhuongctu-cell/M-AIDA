@@ -141,6 +141,11 @@
   .track .tnum{font:700 .8rem var(--mono);color:var(--teal-2);width:1.6rem;text-align:center;flex:none}
   .track .tt{flex:1;min-width:0} .track .tt b{font-size:.92rem;font-weight:600;display:block} .track .tt small{color:var(--muted);font-size:.78rem}
   .track .tico{color:var(--teal-2);flex:none}
+  /* Tiêu đề nhóm: các bản của cùng một bài đứng chung dưới một tên */
+  .tgroup{display:flex;align-items:baseline;gap:.6rem;margin:1.1rem 0 .45rem;padding:0 .2rem}
+  .tgroup:first-child{margin-top:0}
+  .tgname{font-family:var(--serif);font-size:.98rem;font-weight:600;color:var(--ink)}
+  .tgcount{font:700 .62rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.85}
   .disc-note{margin-top:1.4rem;font-size:.82rem;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:1rem 1.15rem;line-height:1.7}
 
   /* ============ floating control console ============ */
@@ -436,10 +441,23 @@
   try{var st=localStorage.getItem('songs_theme');if(st)root.setAttribute('data-theme',st);}catch(e){}
   tb.addEventListener('click',function(){var c=root.getAttribute('data-theme')==='light'?'':'light';if(c)root.setAttribute('data-theme',c);else root.removeAttribute('data-theme');try{localStorage.setItem('songs_theme',c);}catch(e){}});
 
+  // Mỗi bài có thể có nhiều bản. `g` gom các bản của cùng một bài thành một nhóm
+  // để danh sách hiện tiêu đề nhóm một lần, `v` là nhãn bản, và `lyr` đánh dấu
+  // bản nào có khối lời chạy đồng bộ trên trang này.
   var TRACKS=[
-    {t:"The Heartbeat of M-AIDA (Que les preuves décident)",s:"★ TÁC PHẨM CHÍNH · bản mở rộng · 4:29",f:"assets/maida_song_official.mp3"},
-    {t:"Je m'appelle Hương – M-AIDA, mon histoire",s:"récit · lời riêng · 3:04",f:"assets/maida_song_mon_histoire.mp3"}
+    {g:"The Heartbeat of M-AIDA (Que les preuves décident)",v:"bản chính · bản mở rộng",s:"★ TÁC PHẨM CHÍNH · bản mở rộng · 4:29",f:"assets/maida_song_official.mp3",lyr:true},
+    {g:"The Heartbeat of M-AIDA (Que les preuves décident)",v:"remix 1",s:"bản phối lại · 4:08",f:"assets/maida_song_heartbeat_remix1.mp3"},
+    {g:"The Heartbeat of M-AIDA (Que les preuves décident)",v:"remix 2",s:"bản phối lại · 4:04",f:"assets/maida_song_heartbeat_remix2.mp3"},
+    {g:"La recherche, c'est ma passion",v:"remix 1",s:"bản phối lại · EN/FR · 4:49",f:"assets/maida_song_la_recherche_remix1.mp3"},
+    {g:"La recherche, c'est ma passion",v:"remix 2",s:"bản phối lại · EN/FR · 4:49",f:"assets/maida_song_la_recherche_remix2.mp3"},
+    {g:"Je m'appelle Hương – M-AIDA, mon histoire",v:"bản gốc",s:"récit · lời riêng · 3:04",f:"assets/maida_song_mon_histoire.mp3"},
+    {g:"Brand Passport (Vietnam to the World)",v:"bản gốc",s:"EN/FR · 5:19",f:"assets/maida_song_brand_passport.mp3"},
+    {g:"Brand Passport (Vietnam to the World)",v:"remix",s:"bản phối lại · EN/FR · 5:33",f:"assets/maida_song_brand_passport_remix.mp3"},
+    {g:"The Scholar's Final Say",v:"bản gốc",s:"3:20",f:"assets/maida_song_scholars_final_say.mp3"},
+    {g:"The Scholar's Final Say",v:"remix",s:"bản phối lại · 3:26",f:"assets/maida_song_scholars_final_say_remix.mp3"}
   ];
+  // Tiêu đề đầy đủ dùng cho khu vực "đang phát": tên bài kèm nhãn bản.
+  TRACKS.forEach(function(tr){ tr.t = tr.v ? tr.g + ' — ' + tr.v : tr.g; });
   var audio=document.getElementById('audio'), player=document.getElementById('player');
   var ppIcon=document.getElementById('ppIcon');
   var bar=document.getElementById('bar'), prog=document.getElementById('prog');
@@ -450,9 +468,16 @@
   var cur=0, ICON_PLAY='<path d="M8 5v14l11-7z"/>', ICON_PAUSE='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
 
   var tl=document.getElementById('tracklist');
+  var lastGroup=null;
   TRACKS.forEach(function(tr,i){
+    if(tr.g!==lastGroup){
+      var h=document.createElement('div'); h.className='tgroup';
+      var n=TRACKS.filter(function(x){return x.g===tr.g;}).length;
+      h.innerHTML='<span class="tgname">'+tr.g+'</span>'+(n>1?'<span class="tgcount">'+n+' bản</span>':'');
+      tl.appendChild(h); lastGroup=tr.g;
+    }
     var d=document.createElement('div'); d.className='track'; d.dataset.i=i;
-    d.innerHTML='<span class="tnum">'+(i+1)+'</span><div class="tt"><b>'+tr.t+'</b><small>'+tr.s+'</small></div>'+
+    d.innerHTML='<span class="tnum">'+(i+1)+'</span><div class="tt"><b>'+(tr.v||tr.g)+'</b><small>'+tr.s+'</small></div>'+
       '<span class="tico"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>';
     d.addEventListener('click',function(){ if(cur===i && !audio.paused){audio.pause();} else {load(i,true);} });
     tl.appendChild(d);
@@ -484,7 +509,7 @@
   audio.addEventListener('timeupdate',function(){
     var d=audio.duration||0, p=d?audio.currentTime/d:0;
     bar.style.width=(p*100)+'%'; tCur.textContent=fmt(audio.currentTime); tDur.textContent=fmt(d);
-    if(TRACKS[cur]&&TRACKS[cur].f.indexOf('maida_song_official')>=0 && lblks.length){
+    if(TRACKS[cur]&&TRACKS[cur].lyr && lblks.length){
       var idx=Math.min(lblks.length-1,Math.floor(p*lblks.length));
       lblks.forEach(function(b,k){b.classList.toggle('active',k===idx);});
       var a=lblks[idx]; if(a){var r=a.getBoundingClientRect(),host=document.getElementById('lyrics').getBoundingClientRect();
