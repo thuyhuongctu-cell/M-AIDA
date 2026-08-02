@@ -3,6 +3,12 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21282516.svg)](https://doi.org/10.5281/zenodo.21282516)
 ![version](https://img.shields.io/badge/version-7.1.1-blue) ![python](https://img.shields.io/badge/python-FastAPI-green) ![frontend](https://img.shields.io/badge/frontend-React%2019%20%2B%20TS-61dafb) ![license](https://img.shields.io/badge/license-AGPL--3.0-blue)
 
+> **Defense App release candidate:** `v7.2.0-rc1` packages the resilient,
+> offline-ready defense workflow introduced by PR #79. The registered and
+> DOI-archived reference release remains `v7.1.1`; this release candidate does
+> not replace that dissertation/IP baseline. See
+> [`RELEASE_NOTES_v7.2.0-rc1.md`](RELEASE_NOTES_v7.2.0-rc1.md).
+
 Research software for meta-analysis: semi-automated effect-size extraction from
 academic PDFs with a vendor-neutral large-language-model adapter, human-in-the-loop
 verification by the principal investigator, and an immutable data-lock workflow that

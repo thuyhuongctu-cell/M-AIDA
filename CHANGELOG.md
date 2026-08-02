@@ -3,6 +3,28 @@
 All notable changes to this project are documented here. Versions follow the
 internal release line used during the doctoral meta-analysis (P6).
 
+## 7.2.0-rc1 (release candidate, 02/08/2026)
+
+Defense App/pre-commercial pilot candidate built from reviewed commit
+`6ea81964681537d4b53ad1b4734390e608f04a94` (PR #79). This candidate packages
+the existing 7.1.x research workflow for resilient committee demonstration; it
+does not supersede registered reference release 7.1.1 or its DOI metadata.
+
+- SQLite-backed local session persistence and restart recovery.
+- Presenter PIN for mutations and confirmed reset to the verified P6 seed.
+- Offline-ready Defense Mode, PWA assets, one-click launchers and public
+  academic preview.
+- Independent-validation protocol, provisional 40 PRIMARY + 10 RESERVE
+  sampling frame, analysis scripts and freeze gates.
+- CI coverage for backend, Defense App smoke test, validation analysis,
+  frontend type-check/build and public-site metric guard.
+- Production exclusions remain explicit: no production SaaS claim, no student
+  or customer data collection, and no claim of independent accuracy until the
+  blinded benchmark is completed.
+
+The full release boundary and rollback information are recorded in
+`RELEASE_NOTES_v7.2.0-rc1.md` and `release-manifest-v7.2.0-rc1.json`.
+
 ## Chưa phát hành: bộ trình diễn `demo/` (15/07/2026)
 
 Đóng gói trình diễn, KHÔNG thay đổi mã lõi 7.1.x: `demo/run_defense.py`

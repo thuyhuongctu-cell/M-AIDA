@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "release": "7.2.0-rc1",
+  "release_date": "2026-08-02",
+  "status": "release-candidate",
+  "scope": "defense-app-and-independent-validation-package",
+  "source": {
+    "repository": "thuyhuongctu/M-AIDA",
+    "branch": "release/7.2.0-rc1",
+    "reviewed_merge_commit": "6ea81964681537d4b53ad1b4734390e608f04a94",
+    "reviewed_pull_request": 79,
+    "reviewed_ci_run": 30696637831
+  },
+  "registered_reference": {
+    "version": "7.1.1",
+    "concept_doi": "10.5281/zenodo.21282516",
+    "version_doi": "10.5281/zenodo.21282517",
+    "superseded": false
+  },
+  "claims": {
+    "production_saas": false,
+    "independent_accuracy_validated": false,
+    "time_saving_validated": false,
+    "commercial_rights_finalized": false,
+    "student_or_customer_data_collection_enabled": false
+  },
+  "excluded_pull_requests": [2, 74, 80],
+  "tag_gate": {
+    "full_ci_required": true,
+    "offline_rehearsal_required": true,
+    "defense_laptop_check_required": true,
+    "public_site_smoke_check_required": true
+  }
+}
