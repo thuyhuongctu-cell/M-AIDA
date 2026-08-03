@@ -1,54 +1,113 @@
 /**
- * M-AIDA v7.1.1 - Root application component.
+ * M-AIDA v7.2 UI integration shell.
  *
- * Three-workspace layout:
- *   1. Extract       - PDF upload and LLM extraction (ExtractionPanel)
- *   2. Evidence Atlas - descriptive research intelligence (ResearchIntelligence)
- *   3. Verify & Lock - PI verification dashboard (VerificationDashboard + ExportPanel)
+ * This branch keeps the registered v7.1.1 research baseline unchanged while
+ * unifying the internal web/mobile release-candidate experience.
  */
 
 import { App as CapacitorApp } from "@capacitor/app";
 import { Share } from "@capacitor/share";
-import { ExternalLink, Network, Share2 } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import {
+  BookOpen,
+  CheckSquare2,
+  Download,
+  ExternalLink,
+  FileSearch,
+  Home,
+  Languages,
+  Menu,
+  Network,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Share2,
+} from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ExportPanel from "./components/ExportPanel";
 import ExtractionPanel from "./components/ExtractionPanel";
+import HomeDashboard from "./components/HomeDashboard";
 import ResearchIntelligence from "./components/ResearchIntelligence";
 import StatusBanner from "./components/StatusBanner";
-import { runtimeConfig } from "./config";
 import VerificationDashboard from "./components/VerificationDashboard";
-import { StudyDatabaseEntry } from "./types";
+import { runtimeConfig } from "./config";
+import type { StudyDatabaseEntry } from "./types";
 import "./index.css";
+import "./ui-system.css";
 
-type Tab = "extract" | "verify" | "intelligence";
+type AppSection = "home" | "extract" | "review" | "intelligence" | "export";
+type Locale = "vi" | "en";
+
+const shellCopy = {
+  vi: {
+    product: "Không gian nghiên cứu",
+    home: "Tổng quan",
+    extract: "Trích xuất",
+    review: "Kiểm chứng",
+    intelligence: "Evidence Atlas",
+    export: "Xuất dữ liệu",
+    share: "Chia sẻ",
+    menu: "Điều hướng",
+    internal: "Bản đánh giá nội bộ",
+    gate:
+      "Chưa được phép phát hành lên cửa hàng cho đến khi hoàn tất thỏa thuận sở hữu trí tuệ CTU và các cổng phê duyệt.",
+    openWebsite: "Mở website học thuật",
+    human: "Human-in-the-loop · PI verification required",
+  },
+  en: {
+    product: "Research workspace",
+    home: "Overview",
+    extract: "Extract",
+    review: "Verify",
+    intelligence: "Evidence Atlas",
+    export: "Export",
+    share: "Share",
+    menu: "Navigation",
+    internal: "Internal evaluation build",
+    gate:
+      "Store publication remains blocked until the CTU intellectual-property agreement and release gates are approved.",
+    openWebsite: "Open academic website",
+    human: "Human-in-the-loop · PI verification required",
+  },
+} satisfies Record<Locale, Record<string, string>>;
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<Tab>("extract");
-  // Count new extractions so the Verify tab can show an attention badge
+  const [activeSection, setActiveSection] = useState<AppSection>("home");
   const [extractionCount, setExtractionCount] = useState(0);
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof window === "undefined") return "vi";
+    return window.localStorage.getItem("maida-locale") === "en" ? "en" : "vi";
+  });
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const copy = shellCopy[locale];
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    window.localStorage.setItem("maida-locale", locale);
+  }, [locale]);
 
   const handleExtracted = useCallback((_entry: StudyDatabaseEntry) => {
-    setExtractionCount((c) => c + 1);
-  }, []);
-
-  const switchToVerify = useCallback(() => {
-    setActiveTab("verify");
+    setExtractionCount((current) => current + 1);
   }, []);
 
   const shareApp = useCallback(async () => {
     await Share.share({
       title: "M-AIDA Research",
-      text: "M-AIDA supports human-verified data extraction for meta-analysis research.",
+      text:
+        locale === "vi"
+          ? "M-AIDA hỗ trợ trích xuất dữ liệu nghiên cứu có kiểm chứng của con người."
+          : "M-AIDA supports human-verified data extraction for meta-analysis research.",
       url: runtimeConfig.supportUrl,
-      dialogTitle: "Share M-AIDA",
+      dialogTitle: copy.share,
     });
-  }, []);
+  }, [copy.share, locale]);
 
   useEffect(() => {
     if (!runtimeConfig.isNative || runtimeConfig.platform !== "android") return;
     let removeListener: (() => Promise<void>) | undefined;
     void CapacitorApp.addListener("backButton", ({ canGoBack }) => {
-      if (activeTab !== "extract") setActiveTab("extract");
+      if (mobileMenuOpen) setMobileMenuOpen(false);
+      else if (activeSection !== "home") setActiveSection("home");
       else if (canGoBack) window.history.back();
       else void CapacitorApp.minimizeApp();
     }).then((handle) => {
@@ -57,119 +116,208 @@ export default function App() {
     return () => {
       if (removeListener) void removeListener();
     };
-  }, [activeTab]);
+  }, [activeSection, mobileMenuOpen]);
 
   const canShare =
     runtimeConfig.isNative ||
     (typeof navigator !== "undefined" && typeof navigator.share === "function");
 
+  const navigation = useMemo(
+    () => [
+      { id: "home" as const, label: copy.home, icon: Home },
+      { id: "extract" as const, label: copy.extract, icon: FileSearch },
+      {
+        id: "review" as const,
+        label: copy.review,
+        icon: CheckSquare2,
+        badge: extractionCount,
+      },
+      { id: "intelligence" as const, label: copy.intelligence, icon: Network },
+      { id: "export" as const, label: copy.export, icon: Download },
+    ],
+    [copy, extractionCount]
+  );
+
+  const navigate = useCallback((section: AppSection) => {
+    setActiveSection(section);
+    setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const activeLabel =
+    navigation.find((item) => item.id === activeSection)?.label ?? copy.home;
+
   return (
-    <div className="app">
-      <a className="skip-link" href="#main-content">Skip to main content</a>
-      {/* Header */}
-      <header className="app-header">
-        <div>
-          <div className="header-brand">
-            <h1 className="app-title">M-AIDA</h1>
-            <span className="app-version">v{runtimeConfig.appVersion}</span>
+    <div className={`workspace-shell ${sidebarCollapsed ? "is-collapsed" : ""}`}>
+      <a className="skip-link" href="#main-content">
+        {locale === "vi" ? "Bỏ qua đến nội dung chính" : "Skip to main content"}
+      </a>
+
+      <aside className="workspace-sidebar" aria-label={copy.menu}>
+        <div className="workspace-brand">
+          <div className="brand-mark" aria-hidden="true">
+            M
           </div>
-          <p className="app-subtitle">
-            Meta-Analysis Intelligent Data Assistant
-          </p>
+          <div className="brand-copy">
+            <strong>M-AIDA</strong>
+            <span>{copy.product}</span>
+          </div>
         </div>
-        {canShare && (
-          <button className="header-action" type="button" onClick={() => void shareApp()}>
-            <Share2 size={17} aria-hidden="true" />
-            Share
-          </button>
-        )}
-      </header>
 
-      {!runtimeConfig.storePublicationAllowed && (
-        <aside className="release-gate" aria-label="Release status">
-          <strong>Internal evaluation build.</strong> Store publication remains
-          blocked until the CTU intellectual-property agreement and release
-          checklist are approved.
-        </aside>
-      )}
+        <nav className="workspace-nav">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`workspace-nav-item ${
+                  activeSection === item.id ? "is-active" : ""
+                }`}
+                aria-current={activeSection === item.id ? "page" : undefined}
+                onClick={() => navigate(item.id)}
+                title={sidebarCollapsed ? item.label : undefined}
+              >
+                <Icon size={19} aria-hidden="true" />
+                <span>{item.label}</span>
+                {!!item.badge && <b>{item.badge}</b>}
+              </button>
+            );
+          })}
+        </nav>
 
-      {/* Live status strip: backend, data, extraction mode, network */}
-      <StatusBanner />
+        <div className="sidebar-context">
+          <div className="context-label">M-AIDA v{runtimeConfig.appVersion}</div>
+          <p>{copy.human}</p>
+          <a
+            href={runtimeConfig.supportUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="context-link"
+          >
+            <BookOpen size={15} aria-hidden="true" />
+            {copy.openWebsite}
+            <ExternalLink size={12} aria-hidden="true" />
+          </a>
+        </div>
 
-      {/* Tab navigation */}
-      <nav className="tab-nav" role="tablist">
         <button
-          role="tab"
-          aria-selected={activeTab === "extract"}
-          className={`tab-btn ${activeTab === "extract" ? "active" : ""}`}
-          onClick={() => setActiveTab("extract")}
+          type="button"
+          className="sidebar-collapse"
+          onClick={() => setSidebarCollapsed((current) => !current)}
+          aria-label={
+            sidebarCollapsed
+              ? locale === "vi"
+                ? "Mở rộng thanh điều hướng"
+                : "Expand navigation"
+              : locale === "vi"
+              ? "Thu gọn thanh điều hướng"
+              : "Collapse navigation"
+          }
         >
-          Extract
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === "intelligence"}
-          className={`tab-btn ${activeTab === "intelligence" ? "active" : ""}`}
-          onClick={() => setActiveTab("intelligence")}
-        >
-          <Network size={16} aria-hidden="true" />
-          Evidence Atlas
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === "verify"}
-          className={`tab-btn ${activeTab === "verify" ? "active" : ""}`}
-          onClick={() => setActiveTab("verify")}
-        >
-          Verify &amp; Lock
-          {extractionCount > 0 && (
-            <span className="tab-badge">{extractionCount}</span>
+          {sidebarCollapsed ? (
+            <PanelLeftOpen size={18} aria-hidden="true" />
+          ) : (
+            <PanelLeftClose size={18} aria-hidden="true" />
           )}
         </button>
-      </nav>
+      </aside>
 
-      {/* Tab content */}
-      <main className="app-main" id="main-content">
-        {activeTab === "extract" && (
-          <div className="tab-content">
-            <ExtractionPanel onExtracted={handleExtracted} />
-            {extractionCount > 0 && (
-              <div className="extraction-prompt">
-                <p>
-                  {extractionCount} paper{extractionCount !== 1 ? "s" : ""} extracted
-                  this session.
-                </p>
-                <button className="btn btn-link" onClick={switchToVerify}>
-                  Go to Verify &amp; Lock
-                </button>
-              </div>
+      <div className="workspace-body">
+        <header className="workspace-topbar">
+          <button
+            className="mobile-menu-trigger"
+            type="button"
+            onClick={() => setMobileMenuOpen((current) => !current)}
+            aria-expanded={mobileMenuOpen}
+            aria-label={copy.menu}
+          >
+            <Menu size={21} aria-hidden="true" />
+          </button>
+
+          <div className="topbar-title">
+            <span>{copy.product}</span>
+            <h1>{activeLabel}</h1>
+          </div>
+
+          <div className="topbar-actions">
+            <button
+              className="utility-button"
+              type="button"
+              onClick={() => setLocale((current) => (current === "vi" ? "en" : "vi"))}
+              aria-label={
+                locale === "vi" ? "Switch to English" : "Chuyển sang tiếng Việt"
+              }
+            >
+              <Languages size={17} aria-hidden="true" />
+              <span>{locale === "vi" ? "VI" : "EN"}</span>
+            </button>
+            {canShare && (
+              <button
+                className="utility-button"
+                type="button"
+                onClick={() => void shareApp()}
+              >
+                <Share2 size={17} aria-hidden="true" />
+                <span>{copy.share}</span>
+              </button>
             )}
           </div>
+        </header>
+
+        {mobileMenuOpen && (
+          <nav className="mobile-drawer" aria-label={copy.menu}>
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={activeSection === item.id ? "is-active" : ""}
+                  onClick={() => navigate(item.id)}
+                >
+                  <Icon size={18} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
         )}
 
-        {activeTab === "verify" && (
-          <div className="tab-content verify-tab">
-            <VerificationDashboard />
-            <ExportPanel />
-          </div>
+        {!runtimeConfig.storePublicationAllowed && (
+          <aside className="release-gate" aria-label="Release status">
+            <strong>{copy.internal}.</strong> {copy.gate}
+          </aside>
         )}
 
-        {activeTab === "intelligence" && <ResearchIntelligence />}
-      </main>
+        <StatusBanner />
 
-      <footer className="app-footer">
-        <p>
-          M-AIDA v{runtimeConfig.appVersion} · Human verification required
-        </p>
-        <nav className="footer-links" aria-label="Legal and support">
-          <a href={runtimeConfig.privacyPolicyUrl} target="_blank" rel="noreferrer">
-            Privacy <ExternalLink size={12} aria-hidden="true" />
-          </a>
-          <a href={runtimeConfig.supportUrl} target="_blank" rel="noreferrer">
-            Support <ExternalLink size={12} aria-hidden="true" />
-          </a>
-        </nav>
-      </footer>
-    </div>
-  );
-}
+        <main className="workspace-main" id="main-content">
+          {activeSection === "home" && (
+            <HomeDashboard locale={locale} onNavigate={navigate} />
+          )}
+
+          {activeSection === "extract" && (
+            <section className="workspace-page">
+              <header className="page-heading">
+                <span className="page-kicker">01 · Identify & Extract</span>
+                <h2>
+                  {locale === "vi"
+                    ? "Đưa tài liệu vào quy trình có kiểm chứng"
+                    : "Bring evidence into a verifiable workflow"}
+                </h2>
+                <p>
+                  {locale === "vi"
+                    ? "PDF được trích xuất thành đề xuất của máy; mọi quyết định phân tích vẫn phải qua PI."
+                    : "PDFs become machine proposals; every analysis decision still requires PI review."}
+                </p>
+              </header>
+              <ExtractionPanel onExtracted={handleExtracted} />
+              {extractionCount > 0 && (
+                <div className="next-step-card">
+                  <div>
+                    <span>
+                      {locale === "vi" ? "Bước kế tiếp" : "Next step"}
+                    </span>
+                    <strong>
+                      {extractionCount}{" 

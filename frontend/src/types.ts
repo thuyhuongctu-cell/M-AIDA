@@ -1,28 +1,12 @@
 /**
- * TypeScript interfaces matching the M-AIDA v7.1.1 backend Pydantic models.
- *
- * Keep in sync with backend/models.py.
+ * TypeScript interfaces matching the M-AIDA v7.2 release-candidate backend
+ * models. Keep in sync with backend/models.py.
  */
 
-// ---------------------------------------------------------------------------
-// Domain literal types
-// ---------------------------------------------------------------------------
-
-// DOI measure: FSTS, GEO (geographic scope), EXP (export intensity),
-// FDI (outward-FDI-based), COMP (composite/entropy, e.g. TNI), OTH (other)
 export type DoiMeasure = "FSTS" | "GEO" | "EXP" | "FDI" | "COMP" | "OTH";
-// Performance: ACC (accounting), MKT (market), LAB (labour productivity), MIX
 export type PerformanceMeasure = "ACC" | "MKT" | "LAB" | "MIX";
-// ICRV - Institutional Context Regime Variation (WGI Rule of Law, 2023):
-// I=Advanced-Innovation, II=Upper-Middle, III=Emerging, FR=Frontier/SIDS,
-// MX=Multi-country pooled. PI-assigned, never LLM-extracted.
 export type IcrvRegime = "I" | "II" | "III" | "FR" | "MX";
-// DPL phase (PRE/SPN/FOL), PI-derived from median data year.
 export type DplPhase = "PRE" | "SPN" | "FOL";
-
-// ---------------------------------------------------------------------------
-// Core extracted effect model
-// ---------------------------------------------------------------------------
 
 export interface ExtractedEffect {
   study_id: string;
@@ -31,12 +15,10 @@ export interface ExtractedEffect {
   year: number;
   country: string;
 
-  // Sample
   sample_n: number | null;
   sample_start: number | null;
   sample_end: number | null;
 
-  // Raw statistics
   effect_r: number | null;
   effect_t: number | null;
   effect_beta: number | null;
@@ -45,36 +27,33 @@ export interface ExtractedEffect {
   ci_lower: number | null;
   ci_upper: number | null;
 
-  // Moderator coding
   doi_measure: DoiMeasure | null;
   performance_measure: PerformanceMeasure | null;
   icrv_regime: IcrvRegime | null;
   cdai_score: number | null;
   dpl_phase: DplPhase | null;
 
-  // Provenance
   extraction_confidence: number;
+  df_imputed: boolean;
+  beta_outside_pb_domain: boolean;
   requires_verification: boolean;
   pi_locked: boolean;
-  extracted_at: string; // ISO 8601
-  locked_at: string | null; // ISO 8601 or null
+  extracted_at: string;
+  locked_at: string | null;
 }
-
-// ---------------------------------------------------------------------------
-// Study database entry (adds Notion sync info)
-// ---------------------------------------------------------------------------
 
 export interface StudyDatabaseEntry extends ExtractedEffect {
   notion_page_id: string | null;
   pi_notes: string;
+  /**
+   * Immutable snapshot captured when the model first proposed the record.
+   * This must remain distinct from PI overrides and the current editable view.
+   */
+  machine_proposal: Record<string, unknown> | null;
 }
 
-// ---------------------------------------------------------------------------
-// API request / response models
-// ---------------------------------------------------------------------------
-
 export interface ExtractionRequest {
-  pdf_content: string; // Base64-encoded PDF
+  pdf_content: string;
   paper_metadata: PaperMetadata;
 }
 
@@ -94,11 +73,6 @@ export interface VerificationDecision {
   pi_notes: string;
 }
 
-// ---------------------------------------------------------------------------
-// UI-only helpers
-// ---------------------------------------------------------------------------
-
-/** Confidence tier used to drive colour-coding in the dashboard. */
 export type ConfidenceTier = "high" | "medium" | "low";
 
 export function getConfidenceTier(confidence: number): ConfidenceTier {
@@ -114,7 +88,6 @@ export interface StudyFilters {
   locked?: boolean | null;
 }
 
-/** What the next upload will actually do, as reported by the backend. */
 export type ExtractionMode = "live" | "rehearsed_fallback" | "unavailable";
 
 export interface HealthResponse {
@@ -124,7 +97,6 @@ export interface HealthResponse {
   llm_configured?: boolean;
   anthropic_configured?: boolean;
   notion_configured: boolean;
-  /** Storage backend in use; "sqlite" means records survive a restart. */
   storage?: string;
   storage_path?: string;
   llm_ready?: boolean;

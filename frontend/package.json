@@ -14,7 +14,7 @@
     "mobile:prepare:store": "npm run mobile:release-check && npm run build && cap sync",
     "mobile:open:android": "cap open android",
     "mobile:open:ios": "cap open ios",
-    "test:mobile": "node --test scripts/validate-mobile-release.test.mjs"
+    "test:mobile": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
