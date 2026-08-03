@@ -55,6 +55,10 @@ jobs:
           test -n "$STAGING_SSH_USER"
           test -n "$STAGING_SSH_PRIVATE_KEY"
           test -n "$STAGING_SSH_KNOWN_HOSTS"
+          [[ "$STAGING_APP_DIR" = /* ]]
+          [[ "$STAGING_DB_PATH" = /* ]]
+          [[ "$STAGING_BASE_URL" == https://* ]]
+          [[ "$STAGING_BASE_URL" != */ ]]
           [[ "$STAGING_APP_DIR$STAGING_DB_PATH$STAGING_BASE_URL" != *"'"* ]]
 
       - uses: actions/checkout@v4
