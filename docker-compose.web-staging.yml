@@ -1,0 +1,71 @@
+name: maida-web-staging
+
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - "${MAIDA_BACKEND_ENV_FILE:-./backend/.env}"
+    environment:
+      MAIDA_DB_PATH: /data/maida.db
+      MAIDA_DEMO_MODE: "false"
+    restart: unless-stopped
+    expose:
+      - "8765"
+    volumes:
+      - "${MAIDA_DATA_DIR:?Set an absolute MAIDA_DATA_DIR}:/data"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys,urllib.request; sys.exit(0 if urllib.request.urlopen('http://localhost:8765/api/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - maida_private
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ""
+        VITE_APP_VERSION: "${VITE_APP_VERSION:-7.2.0-rc.1}"
+        VITE_RELEASE_CHANNEL: "internal"
+        VITE_RIGHTS_STATUS: "pending-ctu-agreement"
+        VITE_PRIVACY_POLICY_URL: "${VITE_PRIVACY_POLICY_URL:?Set a public HTTPS privacy URL}"
+        VITE_SUPPORT_URL: "${VITE_SUPPORT_URL:?Set a public HTTPS support URL}"
+    restart: unless-stopped
+    expose:
+      - "3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - maida_private
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      WEB_STAGING_DOMAIN: "${WEB_STAGING_DOMAIN:?Set the staging hostname}"
+      WEB_STAGING_BASIC_AUTH_USER: "${WEB_STAGING_BASIC_AUTH_USER:?Set the pilot username}"
+      WEB_STAGING_BASIC_AUTH_HASH: "${WEB_STAGING_BASIC_AUTH_HASH:?Set a Caddy password hash}"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile.web-staging:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      frontend:
+        condition: service_healthy
+    networks:
+      - maida_private
+
+networks:
+  maida_private:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

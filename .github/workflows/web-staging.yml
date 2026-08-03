@@ -1,0 +1,247 @@
+name: Protected web staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Exact 40-character commit SHA to validate or deploy
+        required: true
+        type: string
+      confirmation:
+        description: Type VALIDATE-WEB-STAGING or DEPLOY-WEB-STAGING
+        required: true
+        type: string
+      deploy:
+        description: Deploy to the protected private-pilot host
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maida-protected-web-staging
+  cancel-in-progress: false
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EXPECTED_SHA: ${{ inputs.expected_sha }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      APPLY_DEPLOY: ${{ inputs.deploy }}
+    steps:
+      - name: Enforce exact source and confirmation
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          if [[ "$APPLY_DEPLOY" == "true" ]]; then
+            test "$CONFIRMATION" = "DEPLOY-WEB-STAGING"
+          else
+            test "$CONFIRMATION" = "VALIDATE-WEB-STAGING"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_sha }}
+          persist-credentials: false
+
+      - name: Verify exact checked-out SHA
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Validate and build React workspace
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run typecheck
+          npm run test:mobile
+          npm run build
+
+      - name: Prepare disposable staging configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          backend_env="$RUNNER_TEMP/backend.env"
+          staging_env="$RUNNER_TEMP/web-staging.env"
+          data_dir="$RUNNER_TEMP/data"
+          mkdir -p "$data_dir"
+          cat > "$backend_env" <<'EOF'
+          LLM_PROVIDER=anthropic
+          LLM_API_KEY=
+          LLM_MODEL=
+          MAIDA_DB_PATH=/data/maida.db
+          MAIDA_DEMO_MODE=false
+          CORS_ORIGINS=["https://staging.maida.test"]
+          EOF
+          auth_hash="$(docker run --rm caddy:2-alpine caddy hash-password --plaintext 'ci-only-password')"
+          {
+            echo "WEB_STAGING_DOMAIN=staging.maida.test"
+            echo "WEB_STAGING_BASIC_AUTH_USER=researcher"
+            printf "WEB_STAGING_BASIC_AUTH_HASH='%s'\n" "$auth_hash"
+            echo "MAIDA_DATA_DIR=$data_dir"
+            echo "MAIDA_BACKEND_ENV_FILE=$backend_env"
+            echo "VITE_APP_VERSION=7.2.0-rc.1"
+            echo "VITE_PRIVACY_POLICY_URL=https://maida.test/privacy"
+            echo "VITE_SUPPORT_URL=https://maida.test/support"
+          } > "$staging_env"
+          echo "WEB_STAGING_CI_ENV=$staging_env" >> "$GITHUB_ENV"
+          echo "WEB_STAGING_CI_HASH=$auth_hash" >> "$GITHUB_ENV"
+
+      - name: Validate host contract and Compose model
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/validate_web_staging.py --env-file "$WEB_STAGING_CI_ENV"
+          docker compose \
+            --env-file "$WEB_STAGING_CI_ENV" \
+            -f docker-compose.web-staging.yml \
+            config --quiet
+          docker run --rm \
+            -e WEB_STAGING_DOMAIN=staging.maida.test \
+            -e WEB_STAGING_BASIC_AUTH_USER=researcher \
+            -e WEB_STAGING_BASIC_AUTH_HASH="$WEB_STAGING_CI_HASH" \
+            -v "$PWD/Caddyfile.web-staging:/etc/caddy/Caddyfile:ro" \
+            caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
+
+      - name: Build staging containers
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose \
+            --env-file "$WEB_STAGING_CI_ENV" \
+            -f docker-compose.web-staging.yml \
+            build backend frontend
+
+      - name: Upload web build evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-staging-build-${{ inputs.expected_sha }}
+          path: frontend/build
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    if: ${{ inputs.deploy }}
+    needs: build-and-validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: web-staging
+    env:
+      EXPECTED_SHA: ${{ inputs.expected_sha }}
+      WEB_STAGING_APP_DIR: ${{ vars.WEB_STAGING_APP_DIR }}
+      WEB_STAGING_ENV_FILE: ${{ vars.WEB_STAGING_ENV_FILE }}
+      WEB_STAGING_BASE_URL: ${{ vars.WEB_STAGING_BASE_URL }}
+      WEB_STAGING_SSH_HOST: ${{ secrets.WEB_STAGING_SSH_HOST }}
+      WEB_STAGING_SSH_USER: ${{ secrets.WEB_STAGING_SSH_USER }}
+      WEB_STAGING_SSH_PRIVATE_KEY: ${{ secrets.WEB_STAGING_SSH_PRIVATE_KEY }}
+      WEB_STAGING_SSH_KNOWN_HOSTS: ${{ secrets.WEB_STAGING_SSH_KNOWN_HOSTS }}
+      WEB_STAGING_BASIC_AUTH_USER: ${{ secrets.WEB_STAGING_BASIC_AUTH_USER }}
+      WEB_STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.WEB_STAGING_BASIC_AUTH_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_sha }}
+          persist-credentials: false
+
+      - name: Enforce protected deployment variables
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ inputs.confirmation }}" = "DEPLOY-WEB-STAGING"
+          [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$WEB_STAGING_APP_DIR" =~ ^/[A-Za-z0-9._/-]+$ ]]
+          [[ "$WEB_STAGING_ENV_FILE" =~ ^/[A-Za-z0-9._/-]+$ ]]
+          [[ "$WEB_STAGING_BASE_URL" == https://* ]]
+          [[ "$WEB_STAGING_BASE_URL" != */ ]]
+          test -n "$WEB_STAGING_SSH_HOST"
+          test -n "$WEB_STAGING_SSH_USER"
+          test -n "$WEB_STAGING_SSH_PRIVATE_KEY"
+          test -n "$WEB_STAGING_SSH_KNOWN_HOSTS"
+          test -n "$WEB_STAGING_BASIC_AUTH_USER"
+          test -n "$WEB_STAGING_BASIC_AUTH_PASSWORD"
+
+      - name: Configure SSH with pinned host identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$WEB_STAGING_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$WEB_STAGING_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy exact SHA to private web staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh "$WEB_STAGING_SSH_USER@$WEB_STAGING_SSH_HOST" \
+            bash -s -- "$WEB_STAGING_APP_DIR" "$WEB_STAGING_ENV_FILE" "$EXPECTED_SHA" <<'REMOTE'
+          set -euo pipefail
+          app_dir="$1"
+          env_file="$2"
+          expected_sha="$3"
+          cd "$app_dir"
+          git fetch --prune origin
+          git cat-file -e "${expected_sha}^{commit}"
+          git checkout --detach "$expected_sha"
+          git diff --quiet
+          git diff --cached --quiet
+          python3 scripts/validate_web_staging.py \
+            --env-file "$env_file" \
+            --report /tmp/maida-web-staging-preflight.json
+          docker compose \
+            --env-file "$env_file" \
+            -f docker-compose.web-staging.yml \
+            config --quiet
+          docker compose \
+            --env-file "$env_file" \
+            -f docker-compose.web-staging.yml \
+            up -d --build --remove-orphans
+          test "$(git rev-parse HEAD)" = "$expected_sha"
+          REMOTE
+          scp "$WEB_STAGING_SSH_USER@$WEB_STAGING_SSH_HOST:/tmp/maida-web-staging-preflight.json" \
+            "$RUNNER_TEMP/maida-web-staging-preflight.json"
+
+      - name: Authenticated smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            --retry 12 --retry-delay 5 --retry-all-errors \
+            --user "$WEB_STAGING_BASIC_AUTH_USER:$WEB_STAGING_BASIC_AUTH_PASSWORD" \
+            "$WEB_STAGING_BASE_URL/healthz"
+          curl --fail --silent --show-error \
+            --user "$WEB_STAGING_BASIC_AUTH_USER:$WEB_STAGING_BASIC_AUTH_PASSWORD" \
+            "$WEB_STAGING_BASE_URL/api/health" \
+            | tee "$RUNNER_TEMP/maida-web-staging-health.json"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          payload = json.loads(
+              (Path(os.environ["RUNNER_TEMP"]) / "maida-web-staging-health.json").read_text()
+          )
+          assert payload.get("status") == "ok", payload
+          assert payload.get("storage") == "sqlite", payload
+          PY
+
+      - name: Upload deployment evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-staging-deploy-${{ inputs.expected_sha }}
+          path: |
+            ${{ runner.temp }}/maida-web-staging-preflight.json
+            ${{ runner.temp }}/maida-web-staging-health.json
+          if-no-files-found: warn
+          retention-days: 30
