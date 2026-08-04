@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="vi" data-motion="on">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M-AIDA · Styleguide</title>
+<meta name="theme-color" content="#f6f1e7">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ==== tokens.css ==== */
+/* ============================================================
+   M-AIDA · tokens.css
+   Tầng biến gốc. Nạp TRƯỚC mọi tệp CSS khác.
+   Sau khi nạp tệp này, không viết mã màu trực tiếp ở bất kỳ đâu.
+   ============================================================ */
+
+:root {
+  /* ---------- 1. NỀN GIẤY ---------- */
+  --canvas:            #f6f1e7;
+  --surface-1:         #fbf8f1;
+  --surface-2:         #efe8da;
+  --surface-raised:    #ffffff;
+  --hairline:          #ded5c4;
+  --hairline-strong:   #c4b8a1;
+
+  /* ---------- 2. MỰC ---------- */
+  --ink:               #1a1714;
+  --ink-muted:         #5c554b;
+  --ink-subtle:        #8b8377;
+
+  /* ---------- 3. VÒNG ĐỜI BẢN GHI ----------
+     Bốn màu này KHÔNG dùng cho bất cứ việc gì khác. */
+  --state-proposed:    #8b8377;
+  --state-verified:    #3f7a5a;
+  --state-locked:      #c0862a;
+  --state-flagged:     #a8452a;
+
+  /* nền nhạt của nhãn trạng thái */
+  --state-proposed-bg: rgba(139, 131, 119, .14);
+  --state-verified-bg: rgba( 63, 122,  90, .12);
+  --state-locked-bg:   rgba(192, 134,  42, .12);
+  --state-flagged-bg:  rgba(168,  69,  42, .12);
+
+  /* ---------- 4. NHẤN ----------
+     Hổ phách nghĩa là ĐÃ KHÓA VÀ ĐÃ GỘP. Không dùng cho hover,
+     cho liên kết, cho chuỗi biểu đồ hay cho biểu tượng trang trí. */
+  --primary:           var(--state-locked);
+  --primary-hover:     #a97321;
+  --primary-soft:      #f0e2c4;
+  --on-primary:        #ffffff;
+
+  /* ---------- 5. QUỐC GIA ----------
+     Chỉ dùng cho ghim cờ, huy hiệu bản đồ Việt Nam, dấu ngôn ngữ VI. */
+  --accent-national:   #c8102e;
+
+  /* ---------- 6. THANH GHI CONSOLE ----------
+     Không phải chế độ tối. Đây là tín hiệu ngữ nghĩa:
+     "bạn đang nhìn cỗ máy, không phải trang giấy". */
+  --console-canvas:    #171a19;
+  --console-surface:   #202523;
+  --console-ink:       #e8e4d9;
+  --console-ink-muted: #a8a396;
+  --console-hairline:  #333a37;
+
+  /* ---------- 7. PHÔNG ----------
+     Mọi phông dự phòng đều phải phủ được dấu tiếng Việt. */
+  --font-display: "Source Serif 4", "Noto Serif", Georgia,
+                  "Times New Roman", serif;
+  --font-body:    Inter, "Be Vietnam Pro", -apple-system,
+                  "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono:    "JetBrains Mono", "SFMono-Regular", Consolas,
+                  "Liberation Mono", monospace;
+
+  /* ---------- 8. THANG CHỮ ---------- */
+  --fs-display-xl: clamp(32px, 5vw, 60px);
+  --fs-display-lg: clamp(26px, 3.6vw, 42px);
+  --fs-display-md: 30px;
+  --fs-headline:   22px;
+  --fs-body-lg:    18px;
+  --fs-body:       16px;
+  --fs-body-sm:    14px;
+  --fs-caption:    13px;
+  --fs-eyebrow:    11px;
+  --fs-stat:       38px;
+  --fs-data:       14px;
+  --fs-data-sm:    11px;
+
+  /* Không hạ line-height tiêu đề xuống dưới 1.08:
+     dấu chồng tiếng Việt (ế, ộ, ữ, ỡ) sẽ bị cắt ngọn. */
+  --lh-display:    1.12;
+  --lh-headline:   1.28;
+  --lh-body:       1.62;
+  --lh-tight:      1.40;
+
+  --tr-display-xl: -1.2px;
+  --tr-display-lg: -0.8px;
+  --tr-headline:   -0.2px;
+  --tr-eyebrow:     1.8px;
+
+  /* ---------- 9. NHỊP 4px ---------- */
+  --sp-1:  4px;  --sp-2:  8px;  --sp-3: 12px;  --sp-4: 16px;
+  --sp-5: 24px;  --sp-6: 32px;  --sp-7: 48px;  --sp-8: 64px;
+  --sp-9: 96px;  --sp-10:128px;
+
+  --container:     1180px;
+  --measure:       68ch;
+  --gutter:        32px;
+
+  /* ---------- 10. HÌNH ----------
+     Đây là tài liệu, và tài liệu thì có góc. */
+  --r-none:  0px;
+  --r-chip:  9999px;
+  --r-input: 2px;
+  --r-card:  3px;
+  --r-image: 6px;
+
+  /* Bóng đổ chỉ tồn tại ở MỘT chỗ: khung ảnh chụp console. */
+  --shadow-console: 0 24px 48px rgba(23, 26, 25, .18);
+
+  /* ---------- 11. CHUYỂN ĐỘNG ---------- */
+  --dur-state:  160ms;
+  --dur-enter:  240ms;
+  --dur-story:  600ms;
+  --ease:       cubic-bezier(.2, .6, .2, 1);
+
+  /* ---------- 12. TIÊU ĐIỂM ---------- */
+  --focus-ring:   2px solid var(--primary);
+  --focus-offset: 3px;
+  --touch-min:    44px;
+}
+
+/* ============================================================
+   THANH GHI CONSOLE
+   Không định nghĩa lại thành phần. Chỉ tráo giá trị của cùng
+   một bộ biến, nên mọi thành phần tự đảo màu mà không cần
+   viết thêm một dòng CSS nào.
+   ============================================================ */
+[data-register="console"] {
+  --canvas:          var(--console-canvas);
+  --surface-1:       var(--console-surface);
+  --surface-2:       #1b201e;
+  --surface-raised:  var(--console-surface);
+  --ink:             #ffffff;
+  --ink-muted:       var(--console-ink-muted);
+  --ink-subtle:      #8e8a7e;
+  --hairline:        var(--console-hairline);
+  --hairline-strong: #4a524e;
+
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+/* ============================================================
+   TẮT CHUYỂN ĐỘNG
+   Hệ thống có hai công tắc độc lập và phải tôn trọng cả hai:
+   thiết lập của hệ điều hành, và nút Motion Off trên trang.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-state: 0ms; --dur-enter: 0ms; --dur-story: 0ms; }
+}
+[data-motion="off"] {
+  --dur-state: 0ms; --dur-enter: 0ms; --dur-story: 0ms;
+}
+[data-motion="off"] *,
+[data-motion="off"] *::before,
+[data-motion="off"] *::after {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ============================================================
+   BẢN IN
+   Phụ lục luận án có thể in đen trắng, nên trạng thái phải
+   đọc được mà không cần màu. Nhãn trạng thái luôn có chữ,
+   nên chỉ cần chuyển sang viền.
+   ============================================================ */
+@media print {
+  :root {
+    --canvas: #ffffff;
+    --surface-1: #ffffff;
+    --surface-2: #ffffff;
+    --hairline: #999999;
+    --hairline-strong: #666666;
+    --ink: #000000;
+    --ink-muted: #333333;
+    --ink-subtle: #555555;
+    --state-proposed-bg: transparent;
+    --state-verified-bg: transparent;
+    --state-locked-bg:   transparent;
+    --state-flagged-bg:  transparent;
+  }
+}
+
+/* ==== components.css ==== */
+/* ============================================================
+   M-AIDA · components.css
+   Nạp SAU tokens.css. Không có mã màu nào trong tệp này.
+   ============================================================ */
+
+/* ---------- NỀN ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+body, h1, h2, h3, h4, p, figure, ul, ol, table { margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+@media (max-width: 600px) { .container { padding-inline: 20px; } }
+
+/* Văn xuôi luôn bị giới hạn bề rộng, kể cả trong khung rộng. */
+.measure { max-width: var(--measure); }
+
+/* ---------- CHỮ ---------- */
+h1, h2, h3, h4, .stat {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+h1 { font-size: var(--fs-display-xl); line-height: var(--lh-display); letter-spacing: var(--tr-display-xl); }
+h2 { font-size: var(--fs-display-lg); line-height: var(--lh-display); letter-spacing: var(--tr-display-lg); }
+h3 { font-size: var(--fs-headline);   line-height: var(--lh-headline); letter-spacing: var(--tr-headline); }
+h4 { font-size: 17px;                 line-height: var(--lh-headline); }
+
+p { color: var(--ink-muted); }
+p + p { margin-top: var(--sp-3); }
+.lede { font-size: var(--fs-body-lg); color: var(--ink-muted); }
+
+/* Eyebrow đặt tên LOẠI nội dung phía sau. Mục không gọi tên
+   được loại của mình thì không được dùng eyebrow. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--tr-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+}
+
+.mono { font-family: var(--font-mono); font-size: var(--fs-data); }
+.stat-sym { font-style: italic; }   /* r, I², k, n, df, p */
+
+/* ---------- MỤC ---------- */
+.section {
+  padding-block: var(--sp-9);
+  border-top: 1px solid var(--hairline);
+}
+@media (max-width: 600px) { .section { padding-block: var(--sp-8); } }
+
+/* ---------- XUẤT XỨ CON SỐ ----------
+   Thành phần quan trọng nhất của hệ thống: người đọc phân biệt
+   được ba loại số mà không cần đọc chú thích. */
+[data-prov="locked"] {
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 2px;
+}
+[data-prov="derived"] { color: var(--ink-muted); }
+[data-prov="illustrative"] {
+  font-style: italic;
+  background: var(--surface-2);
+  padding-inline: var(--sp-1);
+}
+
+/* ---------- NHÃN TRẠNG THÁI ----------
+   Luôn có chữ đi kèm màu: phụ lục luận án có thể in đen trắng. */
+.chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-data-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  padding: 3px 9px;
+  border-radius: var(--r-chip);
+  border: 1px solid transparent;
+}
+.chip[data-state="proposed"] { background: var(--state-proposed-bg); color: var(--state-proposed); }
+.chip[data-state="verified"] { background: var(--state-verified-bg); color: var(--state-verified); }
+.chip[data-state="locked"]   { background: var(--state-locked-bg);   color: var(--state-locked); }
+.chip[data-state="flagged"]  { background: var(--state-flagged-bg);  color: var(--state-flagged); }
+
+@media print {
+  .chip { border-color: currentColor; }
+}
+
+/* ---------- BỘ BỐN SỐ ---------- */
+.statquad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-block: 1px solid var(--hairline);
+}
+.statquad > * {
+  padding: var(--sp-5) var(--sp-4);
+  border-left: 1px solid var(--hairline);
+}
+.statquad > *:first-child { border-left: none; padding-left: 0; }
+.statquad b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--fs-stat);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.statquad span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-data-sm);
+  color: var(--ink-subtle);
+  margin-top: var(--sp-2);
+  letter-spacing: .3px;
+}
+@media (max-width: 760px) {
+  .statquad { grid-template-columns: 1fr 1fr; }
+  .statquad > *:nth-child(3) { border-left: none; padding-left: 0; }
+  .statquad > *:nth-child(3), .statquad > *:nth-child(4) { border-top: 1px solid var(--hairline); }
+}
+
+/* ---------- THẺ CỔNG ----------
+   Bước không nêu được điều kiện vượt cổng thì không phải cổng
+   và không được dùng thành phần này. */
+.gate {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-card);
+  padding: var(--sp-5);
+}
+.gate__idx {
+  font-family: var(--font-mono);
+  font-size: var(--fs-data-sm);
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  color: var(--ink-subtle);
+}
+.gate h4 { margin-top: var(--sp-2); }
+.gate p  { margin-top: var(--sp-2); font-size: var(--fs-body-sm); }
+.gate__line {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--hairline);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .4px;
+  color: var(--ink-subtle);
+  text-transform: uppercase;
+}
+
+/* ---------- NÚT ----------
+   Hổ phách chỉ dành cho hành động niêm phong bản ghi. */
+.btn {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+  padding: 10px 18px;
+  min-height: var(--touch-min);
+  border: 1px solid var(--ink);
+  border-radius: var(--r-input);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background var(--dur-state) var(--ease),
+              color var(--dur-state) var(--ease);
+}
+.btn:hover { background: var(--ink); color: var(--canvas); }
+
+.btn--lock {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+.btn--lock:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: var(--on-primary); }
+
+.btn--quiet { border-color: var(--hairline-strong); color: var(--ink-muted); min-height: 0; padding: 6px 14px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ---------- TRÍCH DẪN ----------
+   DOI luôn hiện đủ chuỗi. Có cả DOI khái niệm và DOI phiên bản
+   thì luôn hiện thành cặp. */
+.cite { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.doi {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-input);
+  padding: 5px 10px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.doi:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ---------- BẢNG BẢN GHI ----------
+   Không bao giờ gập bảng dữ liệu thành thẻ trên di động:
+   so sánh giữa các hàng chính là mục đích của bảng. */
+.tablewrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-body-sm); min-width: 640px; }
+.table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+  padding: var(--sp-3) var(--sp-4) var(--sp-3) 0;
+  border-bottom: 2px solid var(--ink);
+  white-space: nowrap;
+}
+.table td {
+  padding: var(--sp-3) var(--sp-4) var(--sp-3) 0;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+  color: var(--ink-muted);
+}
+.table td:first-child { color: var(--ink); font-weight: 600; }
+.table td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* ---------- HÌNH ----------
+   Mọi biểu đồ chống đỡ một luận điểm đều là hình có số. */
+.figure { margin-block: var(--sp-5); }
+.figure figcaption {
+  font-size: var(--fs-caption);
+  color: var(--ink-muted);
+  margin-top: var(--sp-4);
+  max-width: 78ch;
+}
+.figure figcaption b { color: var(--ink); font-weight: 700; }
+.figure figcaption .note { display: block; margin-top: var(--sp-2); font-style: italic; }
+
+/* ---------- CHUYỂN NGÔN NGỮ ----------
+   Hai ngôn ngữ luôn cùng hiện. Trạng thái hiện hành đánh dấu
+   bằng độ đậm và gạch chân, không bằng nền tô. */
+.lang { display: inline-flex; gap: var(--sp-3); font-family: var(--font-mono); font-size: var(--fs-data-sm); }
+.lang button {
+  background: none; border: none; cursor: pointer; padding: 4px 2px;
+  color: var(--ink-subtle); font: inherit; letter-spacing: 1px;
+  border-bottom: 2px solid transparent;
+}
+.lang button[aria-current="true"] { color: var(--ink); font-weight: 700; border-bottom-color: var(--primary); }
+
+/* ---------- ẢNH CHỤP CONSOLE ----------
+   Chỗ DUY NHẤT được dùng bóng đổ trong toàn hệ thống. */
+.console-shot { border-radius: var(--r-image); box-shadow: var(--shadow-console); display: block; max-width: 100%; }
+
+/* ---------- NHÂN VẬT ----------
+   Chỉ xuất hiện ở bốn khe ngữ nghĩa đã định. Không quá một lần
+   trong một khung nhìn, không đè lên hình hay lên số. */
+.character { display: block; max-width: 100%; }
+@media (max-width: 480px) { .character:not([data-slot="hero"]) { display: none; } }
+
+/* ---------- MỤC TIÊU CHẠM ---------- */
+button, a.btn, [role="button"] { min-height: var(--touch-min); }
+.chip { min-height: 0; }   /* chỉ để đọc, không phải điều khiển */
+
+</style>
+<style>
+/* Chỉ dùng cho trang styleguide này, không phải của hệ thống. */
+.sg-nav{position:sticky;top:0;z-index:10;background:var(--canvas);border-bottom:1px solid var(--hairline);padding-block:var(--sp-3)}
+.sg-nav ul{display:flex;gap:var(--sp-5);flex-wrap:wrap;list-style:none}
+.sg-nav a{font-family:var(--font-mono);font-size:var(--fs-data-sm);letter-spacing:1px;text-transform:uppercase;color:var(--ink-subtle);text-decoration:none}
+.sg-nav a:hover{color:var(--ink)}
+.demo{background:var(--surface-raised);border:1px solid var(--hairline);border-radius:var(--r-card);padding:var(--sp-5);margin-top:var(--sp-4)}
+[data-register="console"] .demo{background:var(--surface-1);border-color:var(--hairline)}
+pre{background:var(--console-canvas);color:#cfcabd;border:1px solid var(--console-hairline);border-radius:var(--r-card);padding:var(--sp-4) var(--sp-5);overflow-x:auto;margin-top:var(--sp-3);cursor:pointer;position:relative}
+pre code{font-family:var(--font-mono);font-size:12.5px;line-height:1.6;white-space:pre}
+pre::after{content:"nhấp để chọn";position:absolute;top:6px;right:12px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.6px;color:#6d7370;text-transform:uppercase}
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:var(--sp-3);margin-top:var(--sp-4)}
+.sw{border:1px solid var(--hairline);border-radius:var(--r-card);overflow:hidden;background:var(--surface-1)}
+.sw i{display:block;height:60px}
+.sw div{padding:var(--sp-3)}
+.sw b{display:block;font-size:var(--fs-body-sm);font-weight:600}
+.sw span{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5);margin-top:var(--sp-4)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-4);margin-top:var(--sp-4)}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.rule{border-left:2px solid var(--primary);padding:2px 0 2px var(--sp-4);margin-top:var(--sp-4)}
+.rule .lbl{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--primary)}
+.type-row{display:flex;align-items:baseline;gap:var(--sp-5);padding-block:var(--sp-3);border-bottom:1px solid var(--hairline);flex-wrap:wrap}
+.type-row .tag{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);min-width:120px;letter-spacing:.6px}
+ul.plain{list-style:none;margin-top:var(--sp-3)}
+ul.plain li{padding-left:20px;position:relative;margin-bottom:6px;color:var(--ink-muted)}
+ul.plain li::before{content:"·";position:absolute;left:5px;color:var(--primary);font-weight:700}
+</style>
+<meta property="og:image" content="https://thuyhuongctu.github.io/M-AIDA/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+</head>
+<body>
+
+<nav class="sg-nav">
+  <div class="container">
+    <ul>
+      <li><a href="#logo">Logo</a></li>
+      <li><a href="#mau">Màu</a></li>
+      <li><a href="#chu">Chữ</a></li>
+      <li><a href="#xuatxu">Xuất xứ</a></li>
+      <li><a href="#thanhphan">Thành phần</a></li>
+      <li><a href="#console">Console</a></li>
+      <li><a href="#kiemtra">Kiểm tra</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="container" style="padding-top:var(--sp-8)">
+  <div style="display:flex;align-items:center;gap:var(--sp-4)">
+    <svg width="46" height="46" viewBox="0 0 48 48" role="img" aria-label="M-AIDA">
+      <path d="M1 24 L10 24" stroke="var(--hairline-strong)" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M38 24 L47 24" stroke="var(--hairline-strong)" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M10 24 L24 14 L24 34 Z" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M24 14 L38 24 L24 34 Z" fill="var(--primary)"/>
+    </svg>
+    <div style="font-family:var(--font-display);font-size:30px;font-weight:600;letter-spacing:-.5px;line-height:1">M<span style="color:var(--primary)">–</span>AIDA</div>
+  </div>
+  <h1 style="margin-top:var(--sp-5);max-width:18ch">Bản đối chiếu sống của hệ giao diện.</h1>
+  <p class="lede measure" style="margin-top:var(--sp-4)">Mọi thành phần trên trang này lấy màu, chữ và nhịp trực tiếp từ <code class="mono">tokens.css</code>. Đổi một biến ở đó, cả trang này và toàn bộ sản phẩm đổi theo. Mở trang này cạnh trang đang làm để đối chiếu trước khi viết CSS mới.</p>
+</header>
+
+<!-- ============ LOGO ============ -->
+<section class="section container" id="logo">
+  <p class="eyebrow">01</p>
+  <h2 style="margin-top:var(--sp-2)">Logo</h2>
+  <div class="grid3">
+    <div class="demo" style="text-align:center">
+      <svg width="80" height="80" viewBox="0 0 48 48" aria-label="Dấu hiệu đầy đủ"><path d="M1 24 L10 24" stroke="var(--hairline-strong)" stroke-width="1.6" stroke-linecap="round"/><path d="M38 24 L47 24" stroke="var(--hairline-strong)" stroke-width="1.6" stroke-linecap="round"/><path d="M10 24 L24 14 L24 34 Z" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M24 14 L38 24 L24 34 Z" fill="var(--primary)"/></svg>
+      <p style="font-size:var(--fs-body-sm);margin-top:var(--sp-3)">Từ 24px trở lên</p>
+    </div>
+    <div class="demo" style="text-align:center">
+      <svg width="80" height="80" viewBox="0 0 48 48" aria-label="Dấu hiệu bỏ trục"><path d="M10 24 L24 14 L24 34 Z" fill="none" stroke="var(--ink)" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 14 L38 24 L24 34 Z" fill="var(--primary)"/></svg>
+      <p style="font-size:var(--fs-body-sm);margin-top:var(--sp-3)">16–23px · bỏ trục</p>
+    </div>
+    <div class="demo" style="text-align:center">
+      <svg width="80" height="80" viewBox="0 0 48 48" aria-label="Dấu hiệu rút gọn"><path d="M8 24 L24 12 L40 24 L24 36 Z" fill="var(--primary)"/></svg>
+      <p style="font-size:var(--fs-body-sm);margin-top:var(--sp-3)">Dưới 16px · khối đặc</p>
+    </div>
+  </div>
+  <div class="rule">
+    <span class="lbl">Ghi nhớ</span>
+    <p>Bản dưới 16px là tệp riêng, không phải bản thu nhỏ tự động. Không tô hổ phách cả hai nửa, không xoay hình thoi, không dùng logo thay cho hình thoi gộp trong biểu đồ rừng thật.</p>
+  </div>
+</section>
+
+<!-- ============ MÀU ============ -->
+<section class="section container" id="mau">
+  <p class="eyebrow">02</p>
+  <h2 style="margin-top:var(--sp-2)">Màu</h2>
+  <p class="measure" style="margin-top:var(--sp-3)">Bốn màu vòng đời không dùng cho bất cứ việc gì khác. Hổ phách nghĩa là đã khóa và đã gộp — không phải màu hover, không phải màu liên kết, không phải một chuỗi trong biểu đồ.</p>
+
+  <h3 style="margin-top:var(--sp-6)">Vòng đời bản ghi</h3>
+  <div class="sw-grid">
+    <div class="sw"><i style="background:var(--state-proposed)"></i><div><b>Proposed</b><span>--state-proposed · #8b8377</span></div></div>
+    <div class="sw"><i style="background:var(--state-verified)"></i><div><b>Verified</b><span>--state-verified · #3f7a5a</span></div></div>
+    <div class="sw"><i style="background:var(--state-locked)"></i><div><b>Locked</b><span>--state-locked · #c0862a</span></div></div>
+    <div class="sw"><i style="background:var(--state-flagged)"></i><div><b>Flagged</b><span>--state-flagged · #a8452a</span></div></div>
+  </div>
+
+  <h3 style="margin-top:var(--sp-6)">Giấy và mực</h3>
+  <div class="sw-grid">
+    <div class="sw"><i style="background:var(--canvas);border-bottom:1px solid var(--hairline)"></i><div><b>Canvas</b><span>--canvas · #f6f1e7</span></div></div>
+    <div class="sw"><i style="background:var(--surface-1);border-bottom:1px solid var(--hairline)"></i><div><b>Surface 1</b><span>--surface-1 · #fbf8f1</span></div></div>
+    <div class="sw"><i style="background:var(--surface-2)"></i><div><b>Surface 2</b><span>--surface-2 · #efe8da</span></div></div>
+    <div class="sw"><i style="background:var(--hairline)"></i><div><b>Hairline</b><span>--hairline · #ded5c4</span></div></div>
+    <div class="sw"><i style="background:var(--ink)"></i><div><b>Ink</b><span>--ink · #1a1714</span></div></div>
+    <div class="sw"><i style="background:var(--ink-muted)"></i><div><b>Ink muted</b><span>--ink-muted · #5c554b</span></div></div>
+    <div class="sw"><i style="background:var(--console-canvas)"></i><div><b>Console</b><span>--console-canvas · #171a19</span></div></div>
+    <div class="sw"><i style="background:var(--accent-national)"></i><div><b>Quốc gia</b><span>--accent-national · chỉ cờ và dấu VI</span></div></div>
+  </div>
+</section>
+
+<!-- ============ CHỮ ============ -->
+<section class="section container" id="chu">
+  <p class="eyebrow">03</p>
+  <h2 style="margin-top:var(--sp-2)">Chữ</h2>
+
+  <div style="margin-top:var(--sp-5)">
+    <div class="type-row"><span class="tag">display-xl</span><span style="font-family:var(--font-display);font-size:48px;font-weight:600;letter-spacing:-1.2px;line-height:1.12">Ước lượng gộp</span></div>
+    <div class="type-row"><span class="tag">display-lg</span><span style="font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.8px;line-height:1.12">Kiểm chứng rồi khóa</span></div>
+    <div class="type-row"><span class="tag">headline</span><span style="font-family:var(--font-display);font-size:22px;font-weight:600">Hiệu ứng và dị biệt</span></div>
+    <div class="type-row"><span class="tag">body-lg</span><span style="font-size:18px">Mô hình đề xuất, nhà nghiên cứu quyết định.</span></div>
+    <div class="type-row"><span class="tag">body</span><span style="font-size:16px">Chỉ bản ghi đã khóa mới được xuất ra tệp.</span></div>
+    <div class="type-row"><span class="tag">caption</span><span style="font-size:13px;color:var(--ink-muted)">Lựa chọn minh họa từ kho P6 đã khóa.</span></div>
+    <div class="type-row"><span class="tag">eyebrow</span><span class="eyebrow">TRẠNG THÁI BẰNG CHỨNG</span></div>
+    <div class="type-row"><span class="tag">data</span><span class="mono">r̄ = .074 · 95% CI [.060, .088] · I² = 62.6%</span></div>
+  </div>
+
+  <h3 style="margin-top:var(--sp-7)">Thử dấu tiếng Việt</h3>
+  <p class="measure" style="margin-top:var(--sp-3)">Chuỗi bắt buộc phải thử ở mọi cấp chữ và mọi độ đậm trước khi duyệt một phông. Nếu bất kỳ dấu chồng nào bị cắt ngọn hoặc bị thay phông, phông đó bị loại.</p>
+  <div class="demo">
+    <p style="font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.12;color:var(--ink)">Đỗ Thúy Hường · Cần Thơ</p>
+    <p style="font-family:var(--font-display);font-size:22px;font-weight:600;line-height:1.12;margin-top:var(--sp-3);color:var(--ink)">phân tích tổng hợp · hiệu ứng · kiểm chứng</p>
+    <p class="mono" style="margin-top:var(--sp-3);color:var(--ink)">ế ộ ữ ỡ ằ ẳ ẵ ặ ọ ộ ợ ự ỹ Đ đ</p>
+  </div>
+  <div class="rule">
+    <span class="lbl">Hai ràng buộc cứng</span>
+    <ul class="plain">
+      <li>Không đặt <code class="mono">line-height</code> tiêu đề dưới 1.08 — dấu chồng sẽ bị cắt ngọn.</li>
+      <li>Chuỗi tiếng Việt dài hơn bản tiếng Anh khoảng 25–30%. Thử nút và nhãn bằng chuỗi tiếng Việt dài nhất, không bằng bản tiếng Anh. Không nung chữ vào ảnh.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ XUẤT XỨ ============ -->
+<section class="section container" id="xuatxu">
+  <p class="eyebrow">04</p>
+  <h2 style="margin-top:var(--sp-2)">Xuất xứ con số</h2>
+  <p class="measure" style="margin-top:var(--sp-3)">Quy tắc tách hệ thống này khỏi một trang nghiên cứu thông thường: người đọc phải biết con số đến từ đâu mà không cần đọc chú thích.</p>
+  <div class="demo">
+    <p style="color:var(--ink)">Ước lượng gộp <span class="mono" data-prov="locked" title="k = 236 · locked 2026-05-18">r̄ = .074</span>, khoảng tin cậy 95% <span class="mono" data-prov="locked">[.060, .088]</span>. Bản trình diễn tính tại chỗ cho <span class="mono" data-prov="derived">r = .612</span>. Ví dụ minh họa trong biểu đồ: <span class="mono" data-prov="illustrative">Lu &amp; Beamish 2004, r = +.24</span>.</p>
+  </div>
+<pre><code>&lt;span data-prov="locked" title="k = 236 · locked 2026-05-18"&gt;r̄ = .074&lt;/span&gt;
+&lt;span data-prov="derived"&gt;r = .612&lt;/span&gt;
+&lt;span data-prov="illustrative"&gt;Lu &amp;amp; Beamish 2004, r = +.24&lt;/span&gt;</code></pre>
+  <div class="rule">
+    <span class="lbl">Không được làm</span>
+    <p>Không đặt số minh họa cùng cách trình bày với số đã khóa, kể cả khi hai số nằm trong cùng một biểu đồ.</p>
+  </div>
+</section>
+
+<!-- ============ THÀNH PHẦN ============ -->
+<section class="section container" id="thanhphan">
+  <p class="eyebrow">05</p>
+  <h2 style="margin-top:var(--sp-2)">Thành phần</h2>
+
+  <h3 style="margin-top:var(--sp-6)">5.1 · Nhãn trạng thái</h3>
+  <div class="demo">
+    <span class="chip" data-state="proposed">Proposed</span>
+    <span class="chip" data-state="verified">Verified</span>
+    <span class="chip" data-state="locked">Locked</span>
+    <span class="chip" data-state="flagged">Flagged</span>
+  </div>
+<pre><code>&lt;span class="chip" data-state="locked"&gt;Locked&lt;/span&gt;</code></pre>
+
+  <h3 style="margin-top:var(--sp-6)">5.2 · Bộ bốn số</h3>
+  <div class="demo">
+    <div class="statquad">
+      <div><b data-prov="locked">236</b><span>NGHIÊN CỨU</span></div>
+      <div><b data-prov="locked">286</b><span>CỠ ẢNH HƯỞNG</span></div>
+      <div><b data-prov="locked">.074</b><span>r̄ GỘP</span></div>
+      <div><b>62.6%</b><span>I² DỊ BIỆT</span></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:var(--sp-6)">5.3 · Thẻ cổng</h3>
+  <div class="grid3">
+    <div class="gate">
+      <div class="gate__idx">01</div><h4>Extract</h4>
+      <p>Mô hình đọc toàn văn và đề xuất thống kê tiêu điểm cùng cỡ mẫu và vị trí nguồn.</p>
+      <div class="gate__line">Gate 1 · điểm tin cậy; dưới 0.70 bị đánh dấu</div>
+    </div>
+    <div class="gate">
+      <div class="gate__idx">02</div><h4>Verify</h4>
+      <p>Nhà nghiên cứu soát từng trường, ghi đè chỗ sai và gán các biến điều tiết mà mô hình không được đoán.</p>
+      <div class="gate__line">Gate 2 · PI duyệt; người quyết định</div>
+    </div>
+    <div class="gate">
+      <div class="gate__idx">03</div><h4>Lock</h4>
+      <p>Bản ghi được duyệt sẽ niêm phong kèm dấu thời gian và không sửa được nữa.</p>
+      <div class="gate__line">Bất biến · chỉ bản ghi đã khóa được xuất</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:var(--sp-6)">5.4 · Trích dẫn và hành động</h3>
+  <div class="demo">
+    <div class="cite">
+      <a class="doi" href="#">DOI 10.5281/zenodo.21282516</a>
+      <a class="doi" href="#">v7.1.1 · 10.5281/zenodo.21282517</a>
+      <button class="btn btn--quiet">Cite (APA 7)</button>
+      <button class="btn btn--quiet">BibTeX</button>
+    </div>
+    <div style="margin-top:var(--sp-4);display:flex;gap:var(--sp-3);flex-wrap:wrap">
+      <button class="btn">Verify</button>
+      <button class="btn btn--lock">Lock record</button>
+      <button class="btn" disabled>Export (cần ít nhất một bản ghi đã khóa)</button>
+    </div>
+  </div>
+  <div class="rule">
+    <span class="lbl">Quy tắc nút</span>
+    <p>Hổ phách chỉ dành cho hành động niêm phong. Nút khóa phải có bước xác nhận vì hành động không hoàn tác được. Nút xuất bị vô hiệu khi chưa có bản ghi khóa — và nhãn phải nói rõ lý do, không chỉ mờ đi.</p>
+  </div>
+
+  <h3 style="margin-top:var(--sp-6)">5.5 · Bảng bản ghi</h3>
+  <div class="demo">
+    <div class="tablewrap">
+      <table class="table">
+        <thead><tr><th>Nghiên cứu</th><th>Thống kê gốc</th><th>Công thức</th><th>r</th><th>Tin cậy</th><th>Trạng thái</th></tr></thead>
+        <tbody>
+          <tr><td>Lu &amp; Beamish 2004</td><td class="num">r = .24</td><td>giữ nguyên</td><td class="num">+0.240</td><td class="num">1.00</td><td><span class="chip" data-state="locked">Locked</span></td></tr>
+          <tr><td>Contractor et al. 2003</td><td class="num">t = 2.14, n = 231</td><td>t → r</td><td class="num">+0.140</td><td class="num">0.80</td><td><span class="chip" data-state="verified">Verified</span></td></tr>
+          <tr><td>Xiao et al. 2013</td><td class="num">β = −.031</td><td>β → r</td><td class="num">−0.030</td><td class="num">0.60</td><td><span class="chip" data-state="flagged">Flagged</span></td></tr>
+          <tr><td>Pangarkar 2008</td><td class="num">r = .08</td><td>giữ nguyên</td><td class="num">+0.080</td><td class="num">1.00</td><td><span class="chip" data-state="proposed">Proposed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="rule">
+    <span class="lbl">Trên di động</span>
+    <p>Bảng cuộn ngang, không bao giờ gập thành thẻ. So sánh giữa các hàng chính là mục đích của bảng.</p>
+  </div>
+
+  <h3 style="margin-top:var(--sp-6)">5.6 · Hình có chú thích</h3>
+  <figure class="figure demo">
+    <div style="background:var(--surface-2);border-radius:var(--r-card);padding:var(--sp-6);text-align:center;font-family:var(--font-mono);font-size:var(--fs-data-sm);color:var(--ink-subtle)">[ vị trí biểu đồ rừng ]</div>
+    <figcaption>
+      <b>Hình 4.</b> Cỡ ảnh hưởng của từng nghiên cứu và ước lượng gộp ngẫu nhiên.
+      <span class="note">Ghi chú. Mỗi ô vuông là một nghiên cứu kèm khoảng tin cậy; hình thoi là ước lượng gộp. Lựa chọn minh họa từ kho P6 đã khóa.</span>
+    </figcaption>
+  </figure>
+
+  <h3 style="margin-top:var(--sp-6)">5.7 · Chuyển ngôn ngữ</h3>
+  <div class="demo">
+    <div class="lang" role="group" aria-label="Ngôn ngữ">
+      <button aria-current="true">VI</button>
+      <button aria-current="false">EN</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSOLE ============ -->
+<section class="section" id="console" data-register="console" style="border-top:none">
+  <div class="container">
+    <p class="eyebrow" style="color:var(--primary)">06</p>
+    <h2 style="margin-top:var(--sp-2)">Thanh ghi console</h2>
+    <p class="lede measure" style="margin-top:var(--sp-3)">Không phải chế độ tối. Đây là tín hiệu ngữ nghĩa nói rằng người đọc đang nhìn cỗ máy chứ không phải trang giấy. Đặt <code class="mono">data-register="console"</code> lên một khối là mọi thành phần bên trong tự đảo màu — không cần viết thêm CSS.</p>
+    <div class="demo">
+      <div class="statquad">
+        <div><b data-prov="locked">18</b><span>BẢN GHI</span></div>
+        <div><b data-prov="locked">15</b><span>ĐÃ KHÓA</span></div>
+        <div><b>3</b><span>CHỜ RÀ SOÁT</span></div>
+        <div><b>0</b><span>ĐÃ XUẤT</span></div>
+      </div>
+      <div style="margin-top:var(--sp-5);display:flex;gap:var(--sp-3);flex-wrap:wrap">
+        <span class="chip" data-state="proposed">Proposed</span>
+        <span class="chip" data-state="verified">Verified</span>
+        <span class="chip" data-state="locked">Locked</span>
+        <span class="chip" data-state="flagged">Flagged</span>
+      </div>
+      <div style="margin-top:var(--sp-5)">
+        <button class="btn">Verify</button>
+        <button class="btn btn--lock" style="margin-left:var(--sp-3)">Lock record</button>
+      </div>
+    </div>
+<pre><code>&lt;section data-register="console"&gt;
+  &lt;!-- các thành phần bên trong tự đảo màu --&gt;
+&lt;/section&gt;</code></pre>
+  </div>
+</section>
+
+<!-- ============ KIỂM TRA ============ -->
+<section class="section container" id="kiemtra">
+  <p class="eyebrow">07</p>
+  <h2 style="margin-top:var(--sp-2)">Kiểm tra trước khi phát hành một trang</h2>
+  <p class="measure" style="margin-top:var(--sp-3)">Bốn câu hỏi trả lời trước khi mở tệp CSS, và bảy mục kiểm tra sau khi dựng xong.</p>
+
+  <div class="grid2">
+    <div>
+      <h3>Trước khi dựng</h3>
+      <ul class="plain">
+        <li>Trang thuộc thanh ghi nào — giấy, console, hay giáp ranh có chủ ý?</li>
+        <li>Luận điểm duy nhất của trang là gì? Câu đó thành tiêu đề lớn duy nhất.</li>
+        <li>Số nào đã khóa, số nào tính tại chỗ, số nào chỉ minh họa?</li>
+        <li>Bản tiếng Việt viết chưa, chuỗi dài nhất dài bao nhiêu?</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Sau khi dựng</h3>
+      <ul class="plain">
+        <li>Tìm trong tệp CSS mới không còn mã màu nào bắt đầu bằng <code class="mono">#</code></li>
+        <li>Mỗi con số hiển thị đều mang một trong ba thuộc tính xuất xứ</li>
+        <li>Mỗi bước quy trình đều nêu điều kiện vượt cổng</li>
+        <li>Mỗi hình chống đỡ luận điểm đều có số và chú thích APA</li>
+        <li>Đi hết luồng bằng bàn phím, vòng tiêu điểm luôn nhìn thấy</li>
+        <li>Bật <code class="mono">data-motion="off"</code>: mọi hình động có bản tĩnh mang cùng thông tin</li>
+        <li>In thử một màu: mọi trạng thái vẫn đọc được nhờ chữ, không nhờ màu</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="lbl">Cách nạp</span>
+<pre style="margin-top:var(--sp-3)"><code>&lt;link rel="stylesheet" href="/css/tokens.css"&gt;      &lt;!-- luôn trước --&gt;
+&lt;link rel="stylesheet" href="/css/components.css"&gt;
+&lt;link rel="stylesheet" href="/css/page-atlas.css"&gt;  &lt;!-- riêng từng trang --&gt;</code></pre>
+  </div>
+</section>
+
+<footer class="container" style="padding-block:var(--sp-6);border-top:1px solid var(--hairline)">
+  <p style="font-size:var(--fs-caption)">M-AIDA styleguide · dựng trên tokens.css và components.css · đối chiếu lại giá trị với CSS đang chạy trên site trước khi thay thế hàng loạt.</p>
+</footer>
+
+<script>
+document.querySelectorAll('pre').forEach(function (p) {
+  p.addEventListener('click', function () {
+    var r = document.createRange();
+    r.selectNodeContents(p.querySelector('code'));
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  });
+});
+</script>
+</body>
+</html>
