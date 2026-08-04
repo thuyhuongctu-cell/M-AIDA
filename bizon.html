@@ -2,7 +2,7 @@
 <!--
 ============================================================
 BizOn — Mô phỏng tình huống trong kinh doanh
-Business Situation Simulation (EC1314)
+Business Situation Simulation
 Phiên bản / Version: 2.5 — 07/2026 (giao diện Gamified Arena + trợ lý AI Ms. Hương)
 Tác giả / Author: PhD Candidate Do Thuy Huong
 Bản quyền / Copyright © 2026 Do Thuy Huong. All rights reserved.
@@ -19,7 +19,7 @@ Chương trình máy tính đăng ký quyền tác giả.
 <meta name="author" content="PhD Candidate Do Thuy Huong">
 <meta name="copyright" content="© 2026 Do Thuy Huong. All rights reserved.">
 <meta name="theme-color" content="#2554F4">
-<meta name="description" content="BizOn — Hệ thống mô phỏng tình huống trong kinh doanh (EC1314): trò chơi mô phỏng 6 vòng cho 5 nhóm sinh viên với hàm cầu, biến cố ngẫu nhiên, bảng xếp hạng và lưu trữ cục bộ. Business situation simulation game for classroom use.">
+<meta name="description" content="BizOn — Hệ thống mô phỏng tình huống trong kinh doanh: trò chơi mô phỏng 6 vòng cho 5 nhóm sinh viên với hàm cầu, biến cố ngẫu nhiên, bảng xếp hạng và lưu trữ cục bộ. Business situation simulation game for classroom use.">
 <title>BizOn · Mô phỏng tình huống trong kinh doanh | M-AIDA</title>
 <style>
 
@@ -1745,7 +1745,7 @@ Chương trình máy tính đăng ký quyền tác giả.
       </div>
       <div class="brand-text">
         <h1>BizOn</h1>
-        <div class="tagline" data-i18n="tagline">Mô phỏng tình huống trong kinh doanh · 6 vòng · EC1314</div>
+        <div class="tagline" data-i18n="tagline">Mô phỏng tình huống trong kinh doanh · 6 vòng</div>
       </div>
     </div>
     
@@ -1841,12 +1841,12 @@ Chương trình máy tính đăng ký quyền tác giả.
         
         <div class="field">
           <label class="field-label" data-i18n="course_label">Course</label>
-          <input type="text" class="field-input" id="courseName" value="Mô phỏng tình huống trong kinh doanh (EC1314)">
+          <input type="text" class="field-input" id="courseName" value="Mô phỏng tình huống trong kinh doanh">
         </div>
         <div class="field-2col">
           <div class="field">
             <label class="field-label" data-i18n="class_code">Class Code</label>
-            <input type="text" class="field-input" id="classCode" value="252b_EC1314_1_tructiep">
+            <input type="text" class="field-input" id="classCode" value="">
           </div>
           <div class="field">
             <label class="field-label" data-i18n="semester_label">Semester</label>
@@ -2188,7 +2188,7 @@ Chương trình máy tính đăng ký quyền tác giả.
 // ============================================================
 const TRANSLATIONS = {
   en: {
-    tagline: "Business Situation Simulation · 6 rounds · EC1314",
+    tagline: "Business Situation Simulation · 6 rounds",
     course_name: "Course: Business Situation Simulation",
     lbl_instructor: "Instructor",
     lbl_semester: "Semester",
@@ -2438,7 +2438,7 @@ const TRANSLATIONS = {
     as_tip_guide_b: "The Handbook tab covers the demand model, cost formulas and scoring. The Play tab shows a live financial preview for each team.",
   },
   vi: {
-    tagline: "Mô phỏng tình huống trong kinh doanh · 6 vòng · EC1314",
+    tagline: "Mô phỏng tình huống trong kinh doanh · 6 vòng",
     course_name: "Học phần: Mô phỏng tình huống trong kinh doanh",
     lbl_instructor: "GV",
     lbl_semester: "HK",
@@ -2850,8 +2850,8 @@ const EVENT_POOL = [
 ];
 
 let state = {
-  courseName: "Mô phỏng tình huống trong kinh doanh (EC1314)",
-  classCode: "252b_EC1314_1_tructiep",
+  courseName: "Mô phỏng tình huống trong kinh doanh",
+  classCode: "",
   semester: "HK 2B · 2025–2026",
   teacherName: "PhD Candidate Do Thuy Huong",
   unitName: "",
