@@ -100,7 +100,7 @@ nói "một trong 35 nền kinh tế" — con số dữ liệu có thể đổi 
 ## Danh sách kiểm sau khi thu
 
 - [x] 10 tệp tour mới đặt đúng tên, đúng thư mục (`voice/`, `voice/vi/`) — xong 04-05/08.
-- [ ] 2 tệp atlas generic mới (EN + VI).
+- [x] 2 tệp atlas generic mới (EN + VI) — xong 05/08.
 - [ ] Mở tour, TTS dự phòng không bật (tức tệp mp3 được tìm thấy).
 - [ ] Nghe lướt: không tệp nào đọc một chữ số dữ liệu.
 - [x] `stop3` hai bản vẫn là tệp cũ (không thu thừa).
