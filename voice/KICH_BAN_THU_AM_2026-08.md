@@ -81,19 +81,26 @@ Ngày kịch bản: 04/08/2026 · Nguồn: mảng `TOUR` trong `index.html` (tr�
 
 ---
 
-## Việc nghe kiểm kèm theo — 10 tệp atlas (chưa kết luận, KHÔNG thu vội)
+## Kết quả kiểm 10 tệp atlas (05/08/2026) — 8 giữ, 2 thu lại
 
-Không đọc được nội dung mp3 từ mã nguồn nên cần nghe tay các tệp sau:
-`voice/atlas/turkey|poland|india|china|generic.mp3` và bản `vi_` tương ứng.
+Kịch bản của từng tệp truy từ `STORY` trong mã và commit lắp tệp (đợt 02/08 có
+bước nhận dạng-đối chiếu nội dung từng tệp). Bốn cặp quốc gia
+(`turkey/poland/india/china` + bản `vi_`) chỉ chứa năm xuất bản trong trích
+dẫn công trình của nhóm tác giả — bất biến, KHÔNG thu lại. Riêng câu chung
+nói "một trong 35 nền kinh tế" — con số dữ liệu có thể đổi sau v8:
 
-- Nếu bản thu chỉ kể *câu chuyện* của quốc gia (bối cảnh, đặc điểm) → giữ nguyên.
-- Nếu bản thu đọc **con số cụ thể** (số nghiên cứu, r trung bình, năm) → thuộc
-  cùng diện thu lại một lần, theo cùng quy tắc: bỏ số, kể định tính; con số đã
-  có sẵn trên thẻ màn hình (văn bản thẻ tính động từ dữ liệu, không cần sửa).
+### Tệp `voice/atlas/generic.mp3` — tiếng Anh (THU LẠI)
+
+> One of the economies in this atlas - its numbers are on screen, read straight from the locked dataset.
+
+### Tệp `voice/atlas/vi_generic.mp3` — tiếng Việt (THU LẠI)
+
+> Một trong các nền kinh tế của bản đồ này - con số nằm trên màn hình, đọc thẳng từ tập dữ liệu đã khóa.
 
 ## Danh sách kiểm sau khi thu
 
-- [ ] 10 tệp mới đặt đúng tên, đúng thư mục (`voice/`, `voice/vi/`).
-- [ ] Mở tour, tắt tiếng TTS dự phòng không bật (tức tệp mp3 được tìm thấy).
-- [ ] Nghe lướt: không tệp nào đọc một chữ số.
-- [ ] `stop3` hai bản vẫn là tệp cũ (không thu thừa).
+- [x] 10 tệp tour mới đặt đúng tên, đúng thư mục (`voice/`, `voice/vi/`) — xong 04-05/08.
+- [ ] 2 tệp atlas generic mới (EN + VI).
+- [ ] Mở tour, TTS dự phòng không bật (tức tệp mp3 được tìm thấy).
+- [ ] Nghe lướt: không tệp nào đọc một chữ số dữ liệu.
+- [x] `stop3` hai bản vẫn là tệp cũ (không thu thừa).
