@@ -6,7 +6,7 @@
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atlas of 50 economies — Internationalization &amp; Firm Performance in Asia</title>
+<title>Atlas of 50 economies · Internationalization &amp; Firm Performance in Asia</title>
 <meta name="description" content="An atlas of 50 Asian and Pacific economies: each with its flag, its ICRV institutional regime and curve, a distinctive symbol, a famous song, and Huong in its national dress.">
 <link rel="stylesheet" href="assets/asia.css">
 <meta name="robots" content="noindex,nofollow">
@@ -72,9 +72,9 @@
   <section class="dhero" style="grid-template-columns:1fr">
     <div>
       <span class="eyebrow">🗺️ <span class="lang-vi">Atlas văn hóa &amp; thể chế</span><span class="lang-en">Cultural &amp; institutional atlas</span></span>
-      <h1 style="margin:.5rem 0 .3rem"><span class="lang-vi">50 nền kinh tế — Hương trong trang phục từng nước</span><span class="lang-en">50 economies — Huong in each nation's dress</span></h1>
-      <p class="muted" style="max-width:730px"><span class="lang-vi">Mỗi nền kinh tế: lá cờ, chế độ thể chế ICRV và đường cong của nó, một biểu tượng đặc trưng, một bài hát nổi tiếng — và Hương trong trang phục truyền thống nước đó. Bấm vào một nước để xem chi tiết.</span>
-      <span class="lang-en">Every economy: its flag, its ICRV institutional regime and curve, a distinctive symbol, a famous song — and Huong in its national dress. Tap a country for details.</span></p>
+      <h1 style="margin:.5rem 0 .3rem"><span class="lang-vi">50 nền kinh tế: Hương trong trang phục từng nước</span><span class="lang-en">50 economies: Huong in each nation's dress</span></h1>
+      <p class="muted" style="max-width:730px"><span class="lang-vi">Mỗi nền kinh tế: lá cờ, chế độ thể chế ICRV và đường cong của nó, một biểu tượng đặc trưng, một bài hát nổi tiếng, và Hương trong trang phục truyền thống nước đó. Bấm vào một nước để xem chi tiết.</span>
+      <span class="lang-en">Every economy: its flag, its ICRV institutional regime and curve, a distinctive symbol, a famous song, and Huong in its national dress. Tap a country for details.</span></p>
     </div>
   </section>
   <div class="atlas-tools">
@@ -111,7 +111,7 @@
 </div></div>
 
 <footer><div class="wrap fg">
-  <div><span class="lang-vi">Luận án đang thực hiện — chưa công bố.</span><span class="lang-en">Dissertation in progress — unpublished.</span></div>
+  <div><span class="lang-vi">Luận án đang thực hiện, chưa công bố.</span><span class="lang-en">Dissertation in progress, unpublished.</span></div>
   <div>© 2026 Đỗ Thùy Hương · Can Tho University</div>
 </div></footer>
 
@@ -151,7 +151,7 @@
     function songHTML(title, artist, kv, ke){
       var q=encodeURIComponent(title+' '+(artist||'')+' '+d.ne);
       var yt='https://www.youtube.com/results?search_query='+q;
-      var who=artist?' — '+artist:'';
+      var who=artist?', '+artist:'';
       return '<div style="margin-bottom:.3rem"><b>'+title+'</b>'+who+' · <span class="lang-vi">'+kv+'</span><span class="lang-en">'+ke+'</span> '+
         '<a class="listen" href="'+yt+'" target="_blank" rel="noopener">▶ <span class="lang-vi">nghe thử</span><span class="lang-en">listen</span></a></div>';
     }
@@ -168,7 +168,7 @@
     var iso=String.fromCharCode(65+(d.flag.codePointAt(0)-0x1F1E6))+String.fromCharCode(65+(d.flag.codePointAt(2)-0x1F1E6));
     document.getElementById('mWB').href='https://data.worldbank.org/country/'+iso;
     var img=document.getElementById('mImg'), note=document.getElementById('mCostumeNote');
-    img.alt=(isEN()?d.ne:d.nv)+' — Huong';
+    img.alt=(isEN()?d.ne:d.nv)+' · Huong';
     img.onerror=function(){img.onerror=null;img.src='assets/img/huong/welcome.png';
       note.innerHTML='<span class="lang-vi">Trang phục '+d.cv+' đang cập nhật</span><span class="lang-en">'+d.ce+' render coming soon</span>';};
     note.innerHTML=''; img.src='assets/img/huong/costume/'+d.key+'.png';
