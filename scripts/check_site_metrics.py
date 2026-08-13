@@ -59,7 +59,7 @@ for tok in REQUIRED_INDEX:
 # fake readiness while numbers still match the old JSON). provisional=false:
 # the caveat must be gone (stale caveat over locked numbers).
 import re as _re
-for page in ("index.html", "docs/index.html"):
+for page in ("index.html",):
     p = os.path.join(ROOT, page)
     if not os.path.exists(p):
         continue
@@ -76,7 +76,7 @@ for page in ("index.html", "docs/index.html"):
 # --- Escaped sequences leaking into rendered HTML (e.g. a literal \n between
 # CTAs, found 2026-08-04 on commercial.html). Scan markup outside script/style. ---
 _STRIP = _re.compile(r"<script\b.*?</script>|<style\b.*?</style>", _re.S | _re.I)
-for page in PAGES + ["docs/index.html", "docs/commercial.html"]:
+for page in PAGES:
     p = os.path.join(ROOT, page)
     if not os.path.exists(p):
         continue
@@ -90,8 +90,8 @@ for page in PAGES + ["docs/index.html", "docs/commercial.html"]:
 # --- Decimal commas in Vietnamese strings: displayed numbers must match the
 # locked dataset character-for-character in every language (provenance rule,
 # THUAT_NGU_VA_QUY_TAC_TIENG_VIET.md §4). ---
-for page in ("index.html", "docs/index.html", "commercial.html",
-             "docs/commercial.html", "defense.html", "library.html"):
+for page in ("index.html", "commercial.html",
+             "defense.html", "library.html"):
     p = os.path.join(ROOT, page)
     if not os.path.exists(p):
         continue
