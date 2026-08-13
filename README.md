@@ -16,6 +16,16 @@ exports a reproducible effect-size dataset for three-level meta-analytic regress
 Built to support the P6 (meta-analysis) component of the first author's doctoral
 dissertation on the internationalization-performance relationship.
 
+**Scope — which kinds of literature review this serves.** M-AIDA is an
+extraction-and-verification engine at the data-collection stage of PRISMA; it
+does not search the literature, does not screen records, and does not run the
+final statistical model. It serves a **meta-analysis** in full (its design
+target), the **data-extraction stage of a systematic review** (evidence-gated
+coding, recorded exclusion reasons, two independent coders), and **small-scale
+evidence tables** that ground the hypotheses of a proposal. It is of partial
+use for scoping reviews, marginal use for narrative reviews, and no use for
+bibliometric analysis, which is a different class of tool.
+
 ## System Architecture
 
 ```text
@@ -136,20 +146,43 @@ confirmed for every PRIMARY study; the freeze command enforces both gates.
    coefficient (not interactions or controls). Moderators (ICRV, DPL, cDAI) are left
    blank for the principal investigator to assign from external lookup tables.
 3. **Convert**: the canonical target is Pearson r. When only a derived statistic is
-   reported, r is computed from t using Cohen (1988), or from a standardized beta
-   using Peterson and Brown (2005). A three-level confidence score is attached.
-4. **Verify**: the principal investigator reviews each field; any record with
+   reported, r is computed from t using Cohen (1988) with df = n − p − 1 taken from
+   the model's predictor count, or from a standardized beta using Peterson and
+   Brown (2005) — full formula r = 0.98β + 0.05λ, valid only for |β| ≤ 0.5;
+   out-of-domain betas are rejected, never approximated. Each record carries
+   `metric_type`, `estimand_source`, and `source_controls`, so beta-derived values
+   enter sensitivity analysis only, and a three-level confidence score is attached.
+4. **Evidence gate**: a record is created only with page-and-quote evidence for
+   **both** the statistic and the sample size (`evidence_page`/`evidence_quote`,
+   `n_evidence_page`/`n_evidence_quote`). Missing evidence raises HTTP 422 and no
+   record is stored — the system has no default or fallback output path for any
+   input.
+5. **Verify**: the principal investigator reviews each field; any record with
    confidence below 0.70 is flagged for mandatory review.
-5. **Lock**: an approved record is permanently locked with a UTC timestamp and can no
+6. **Lock**: an approved record is permanently locked with a UTC timestamp and can no
    longer be edited. Only locked records enter the analysis export.
+
+## Effect-size recoding and lock generations (`analysis/`)
+
+The [`analysis/`](analysis/) package is the canonical, self-tested implementation
+of the conversion layer (`effect_size.py` with hand-computed unit tests, plus an
+R twin `effect_size.R` feeding the metafor pipeline). `migrate_v8.py` derives a
+new lock generation from a released dataset without ever editing it: v7.1.1
+(DOI-pinned) stays immutable, every derived record carries a `derived_from`
+pointer, and excluded records keep a written reason (PRISMA-ready). Each run
+emits `figures.json` — the single source every display surface reads its
+headline numbers from. Policy details are in
+[`analysis/README.md`](analysis/README.md).
 
 ## Live web pages (GitHub Pages)
 
 The repository is also served as a static site (GitHub Pages):
 
 - **Main page** ([index.html](https://thuyhuongctu.github.io/M-AIDA/)): overview,
-  positioning, the interactive atlas of 236 studies, the in-browser extraction
-  console, and the Huong AI tour guide. Bilingual EN/VI.
+  positioning, the interactive atlas of the locked study corpus, the in-browser
+  extraction console (three sample papers — r, t, standardized beta — walked
+  through the same convert/verify/lock/export gates; it refuses PDFs, which need
+  the backend), and the Huong AI tour guide. Bilingual EN/VI.
 - **Defense App** ([defense.html](https://thuyhuongctu.github.io/M-AIDA/defense.html)):
   public explanation of the presenter-controlled local application, its
   Academic Demo / Defense App / Cloud boundaries, rehearsal flow, and launch
@@ -198,6 +231,17 @@ uses the realistic 3D Huong character in high resolution; cross-page links
 carry the selected language (`?lang=`), and Data & Melody opens in French by
 default with VI / EN / FR toggles.
 
+**Brand and design system.** The official brand kit lives in
+[`assets/brand/`](assets/brand/) (diamond mark, lockups, favicon, og-image, and
+usage rules including the two-design-system boundary with the institutional
+identity); the page headers render the official mark bound to theme tokens.
+Design tokens and components are canonical in [`css/tokens.css`](css/tokens.css)
+and [`css/components.css`](css/components.css), documented in
+[`styleguide.html`](styleguide.html) (plus a fully offline
+`styleguide-standalone.html`). Fonts are self-hosted woff2 subsets
+([`assets/fonts/`](assets/fonts/), SIL OFL — see `THIRD_PARTY_LICENSES.md`);
+no external font CDN is called.
+
 **Data consistency.** Every headline research number on the site (studies,
 effect sizes, economies, pooled and bias-adjusted *r*, I²) has a single source
 of truth in [`assets/data/site-metrics.json`](assets/data/site-metrics.json),
@@ -205,6 +249,11 @@ mirrored from the locked P6 corpus (`p6/results/table1_baseline.csv` in the
 dissertation repo). A guard, [`scripts/check_site_metrics.py`](scripts/check_site_metrics.py),
 runs in the GitHub Pages workflow and **fails the deploy** if any page drifts
 from those numbers, so the published pages cannot show stale statistics.
+
+The narration layer follows the same discipline from the other side: the Huong
+AI voice guide never speaks a research number. She explains the process; the
+numbers stay on screen, read from the single source. Recordings therefore never
+go stale when the dataset moves to a new lock generation.
 
 ## Citation
 
@@ -245,6 +294,33 @@ v3.0 (AGPL-3.0-only)**, see [`LICENSE`](LICENSE). The AGPL's Section 13 covers
 network use: running a modified version as a service requires publishing that
 version's source.
 
-The authors also offer **commercial (dual) licensing** for closed-source or
-proprietary use, see [`COMMERCIAL-LICENSE.md`](COMMERCIAL-LICENSE.md). Contact
-thuyhuongctu@gmail.com or patu@ctu.edu.vn.
+Using M-AIDA under the AGPL requires no contact and no fee.
+
+**Commercial licensing is not currently available.** Granting terms other than
+the AGPL requires holding, or being authorised by all co-holders to grant, the
+economic rights in the work. Those rights are not yet formally settled (see the
+next section), so no such grant can be made today. The position is stated in
+full in [`COMMERCIAL-LICENSE.md`](COMMERCIAL-LICENSE.md).
+
+AGPL-3.0-only supersedes the earlier "M-AIDA Academic Source-Available License
+v1.0", retired on 4 August 2026. Any document still carrying that name is out of
+date; `LICENSE` in this repository is the operative text.
+
+### Ownership, and why the Zenodo files are restricted
+
+Economic rights in M-AIDA are held **jointly by Can Tho University and the two
+authors**, under Article 71 of the university's science and technology management
+regulation (Decision 5152/QD-DHCT of 6 October 2023). The copyright registration
+is filed through the university and is still in process.
+
+Because of that, the archived deposit at
+[10.5281/zenodo.21282516](https://doi.org/10.5281/zenodo.21282516) keeps its
+**files under restricted access** while the record itself, its metadata and its
+DOIs stay public and citable. This does not conflict with the AGPL: the AGPL
+governs what a recipient of the software may do with it, and obliges the authors
+to supply corresponding source to those recipients. It does not oblige anyone to
+publish files in any particular archive. The complete source is public in this
+repository, so the AGPL grant is fully effective today.
+
+When the registration completes, opening the deposit is a decision for the joint
+owners, not for either author alone.
