@@ -2066,12 +2066,12 @@ Chương trình máy tính đăng ký quyền tác giả.
           </tr>
         </thead>
         <tbody>
-          <tr><td><strong>1</strong></td><td>Session 5</td><td data-i18n="guide_r1">Startup launch: initial pricing</td><td><span style="color: var(--text-3);">, </span></td></tr>
-          <tr><td><strong>2</strong></td><td>Session 6</td><td data-i18n="guide_r2">Cost structure refinement</td><td><span style="color: var(--text-3);">, </span></td></tr>
+          <tr><td><strong>1</strong></td><td>Session 5</td><td data-i18n="guide_r1">Startup launch: initial pricing</td><td><span style="color: var(--text-3);">–</span></td></tr>
+          <tr><td><strong>2</strong></td><td>Session 6</td><td data-i18n="guide_r2">Cost structure refinement</td><td><span style="color: var(--text-3);">–</span></td></tr>
           <tr><td><strong>3</strong></td><td>Session 7</td><td data-i18n="guide_r3">Market volatility</td><td><strong style="color: var(--warning-glow);" data-i18n="guide_r3_event">YES (Tet / Pandemic / Competition)</strong></td></tr>
-          <tr><td><strong>4</strong></td><td>Session 8</td><td data-i18n="guide_r4">Fixed cost expansion: investment</td><td><span style="color: var(--text-3);">, </span></td></tr>
+          <tr><td><strong>4</strong></td><td>Session 8</td><td data-i18n="guide_r4">Fixed cost expansion: investment</td><td><span style="color: var(--text-3);">–</span></td></tr>
           <tr><td><strong>5</strong></td><td>Session 9</td><td data-i18n="guide_r5">Aggressive marketing campaign</td><td><strong style="color: var(--warning-glow);" data-i18n="guide_r5_event">YES (Opportunity / Risk)</strong></td></tr>
-          <tr><td><strong>6</strong></td><td>Session 10</td><td data-i18n="guide_r6">Final showdown: championship</td><td><span style="color: var(--text-3);">, </span></td></tr>
+          <tr><td><strong>6</strong></td><td>Session 10</td><td data-i18n="guide_r6">Final showdown: championship</td><td><span style="color: var(--text-3);">–</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -2991,7 +2991,7 @@ function renderPlayPanel() {
           <div class="group-name">${g.name}</div>
           <div class="group-status ${statusClass}">${statusText}</div>
         </div>
-        <div class="group-company">${g.company || ', '}</div>
+        <div class="group-company">${g.company || '–'}</div>
         
         <div class="group-stats">
           <div class="stat-row">
@@ -3229,7 +3229,7 @@ function launchConfetti() {
 }
 
 function roundStatusChip(r) {
-  if (!(r.price > 0) || r.demand === undefined) return ', ';
+  if (!(r.price > 0) || r.demand === undefined) return '–';
   if (r.demand > r.actualQ + 0.5) return `<span class="st-chip st-fire">${t('st_stockout')}</span>`;
   if (r.plannedQ - r.actualQ > 0.5) return `<span class="st-chip st-inv">${t('st_inventory')}</span>`;
   return `<span class="st-chip st-ok">${t('st_optimal')}</span>`;
@@ -3253,8 +3253,8 @@ function showRoundSummary() {
         <div class="champion-name" style="color: ${champ.g.color}">${champ.g.name}${champ.g.company ? ' · ' + champ.g.company : ''}</div>
         <div class="champion-profit ${champ.r.profit >= 0 ? 'positive' : 'negative'}">${t('th_profit')}: ${fmtM(champ.r.profit)}</div>
         <div class="champion-tiles">
-          <div><span>${t('th_share')}</span><strong>${champ.r.share !== undefined ? champ.r.share.toFixed(0) + '%' : ', '}</strong></div>
-          <div><span>CSAT</span><strong>${csat === null ? ', ' : csat + '%'}</strong></div>
+          <div><span>${t('th_share')}</span><strong>${champ.r.share !== undefined ? champ.r.share.toFixed(0) + '%' : '–'}</strong></div>
+          <div><span>CSAT</span><strong>${csat === null ? '–' : csat + '%'}</strong></div>
           <div><span>${t('th_cash')}</span><strong>${champ.g.cash.toFixed(1)}M</strong></div>
         </div>
       </div>
@@ -3305,7 +3305,7 @@ function showRoundSummary() {
       <td>${r.price}k</td>
       <td>${r.plannedQ}</td>
       <td><strong>${r.actualQ}</strong></td>
-      <td>${r.share !== undefined ? r.share.toFixed(0) + '%' : ', '}</td>
+      <td>${r.share !== undefined ? r.share.toFixed(0) + '%' : '–'}</td>
       <td>${r.revenue.toFixed(1)}M</td>
       <td>${r.cost.toFixed(1)}M</td>
       <td style="color: ${profitColor}; font-weight: 700;">${r.profit >= 0 ? '+' : ''}${r.profit.toFixed(1)}M</td>
@@ -3491,7 +3491,7 @@ function renderHistory() {
       html += `<td style="color: ${color}; font-weight: 700;">${round.profit >= 0 ? '+' : ''}${round.profit.toFixed(1)}M</td>`;
     });
     const evKey = state.groups[0].rounds[r].event;
-    html += `<td style="font-size: 12px; color: var(--text-3);">${evKey === 'none' ? ', ' : t(evKey)}</td></tr>`;
+    html += `<td style="font-size: 12px; color: var(--text-3);">${evKey === 'none' ? '–' : t(evKey)}</td></tr>`;
   }
   html += '</tbody></table></div>';
   
@@ -3589,7 +3589,7 @@ function csCEO(g, last) {
         <div class="kpi-card"><div class="kpi-label">${t('ceo_cash')}</div><div class="kpi-value">${g.cash.toFixed(1)}M</div></div>
         <div class="kpi-card"><div class="kpi-label">${t('ceo_profit')}</div><div class="kpi-value ${g.totalProfit >= 0 ? 'positive' : 'negative'}">${fmtM(g.totalProfit)}</div></div>
         <div class="kpi-card"><div class="kpi-label">${t('ceo_revenue')}</div><div class="kpi-value">${g.totalRevenue.toFixed(1)}M</div></div>
-        <div class="kpi-card"><div class="kpi-label">${t('ceo_share')}</div><div class="kpi-value">${last && last.share !== undefined ? last.share.toFixed(0) + '%' : ', '}</div></div>
+        <div class="kpi-card"><div class="kpi-label">${t('ceo_share')}</div><div class="kpi-value">${last && last.share !== undefined ? last.share.toFixed(0) + '%' : '–'}</div></div>
       </div>
     </div>
     <div class="card"><div class="card-title"><h2>${t('ceo_nodes')}</h2></div>
@@ -3616,10 +3616,10 @@ function csCFO(g, last) {
     </div>
     <div class="card">${csHeader('cfo_preview', 'var(--g1)')}
       <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom:12px;">
-        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_share')}</div><div class="kpi-value">${preview ? preview.share.toFixed(0) + '%' : ', '}</div></div>
-        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_demand')}</div><div class="kpi-value">${preview ? preview.demand : ', '}</div></div>
-        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_sold')}</div><div class="kpi-value">${preview ? preview.actualQ : ', '}</div></div>
-        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_profit')}</div><div class="kpi-value ${preview && preview.profit >= 0 ? 'positive' : 'negative'}">${preview ? fmtM(preview.profit) : ', '}</div></div>
+        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_share')}</div><div class="kpi-value">${preview ? preview.share.toFixed(0) + '%' : '–'}</div></div>
+        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_demand')}</div><div class="kpi-value">${preview ? preview.demand : '–'}</div></div>
+        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_sold')}</div><div class="kpi-value">${preview ? preview.actualQ : '–'}</div></div>
+        <div class="kpi-card"><div class="kpi-label">${t('cfo_p_profit')}</div><div class="kpi-value ${preview && preview.profit >= 0 ? 'positive' : 'negative'}">${preview ? fmtM(preview.profit) : '–'}</div></div>
       </div>
       <div class="metric-caption">${t('cfo_preview_note')}</div>
     </div>
@@ -3695,7 +3695,7 @@ function csCMO(g, last) {
       <div style="margin-top:22px;">
         <div class="card-title" style="margin-bottom:6px;"><h2>${t('cmo_trend')}</h2></div>
         <div class="metric-big" style="color:${trend === null ? 'var(--text-3)' : trend >= 0 ? 'var(--success-glow)' : 'var(--danger-glow)'};">
-          ${trend === null ? ', ' : (trend >= 0 ? '▲ +' : '▼ ') + trend.toFixed(1) + ' đ%'}
+          ${trend === null ? '–' : (trend >= 0 ? '▲ +' : '▼ ') + trend.toFixed(1) + ' đ%'}
         </div>
         <div class="metric-caption">${last && last.share !== undefined ? t('ceo_share') + ': ' + last.share.toFixed(0) + '%' : t('cs_no_rounds')}</div>
       </div>
@@ -3708,17 +3708,17 @@ function csCOO(g, last) {
   const inv = last ? Math.max(0, last.plannedQ - last.actualQ) : null;
   const rows = g.rounds.map(r => {
     const leftover = Math.max(0, r.plannedQ - r.actualQ);
-    return `<tr><td><strong>${r.round}</strong></td><td>${r.plannedQ}</td><td>${r.demand !== undefined ? r.demand : ', '}</td><td>${r.actualQ}</td>
+    return `<tr><td><strong>${r.round}</strong></td><td>${r.plannedQ}</td><td>${r.demand !== undefined ? r.demand : '–'}</td><td>${r.actualQ}</td>
       <td style="color:${leftover > 0 ? 'var(--warning-glow)' : 'var(--text-2)'}; font-weight:700;">${leftover}</td></tr>`;
   }).join('');
   return `<div class="cs-grid">
     <div class="card">${csHeader('coo_eff', 'var(--g3)')}
-      <div class="metric-big">${eff === null ? ', ' : eff + '%'}</div>
+      <div class="metric-big">${eff === null ? '–' : eff + '%'}</div>
       <div class="meter"><div class="meter-fill" style="width:${eff || 0}%; background:${eff === null ? 'var(--text-4)' : eff >= 80 ? 'var(--success)' : eff >= 50 ? 'var(--warning)' : 'var(--danger)'};"></div></div>
       <div class="metric-caption">${t('coo_eff_note')}</div>
     </div>
     <div class="card">${csHeader('coo_inv', 'var(--warning)')}
-      <div class="metric-big">${inv === null ? ', ' : inv.toLocaleString()}</div>
+      <div class="metric-big">${inv === null ? '–' : inv.toLocaleString()}</div>
       <div class="metric-caption">${t('coo_inv_note')}</div>
     </div>
     <div class="card span2" style="padding:0; overflow:hidden;">
@@ -3739,17 +3739,17 @@ function csCCO(g, last) {
   }
   const rows = g.rounds.map(r => {
     const served = r.demand > 0 ? Math.round(Math.min(1, r.actualQ / r.demand) * 100) : null;
-    return `<tr><td><strong>${r.round}</strong></td><td>${r.demand !== undefined ? r.demand : ', '}</td><td>${r.actualQ}</td>
-      <td style="font-weight:700; color:${served === null ? 'var(--text-3)' : served >= 95 ? 'var(--success-glow)' : 'var(--warning-glow)'};">${served === null ? ', ' : served + '%'}</td></tr>`;
+    return `<tr><td><strong>${r.round}</strong></td><td>${r.demand !== undefined ? r.demand : '–'}</td><td>${r.actualQ}</td>
+      <td style="font-weight:700; color:${served === null ? 'var(--text-3)' : served >= 95 ? 'var(--success-glow)' : 'var(--warning-glow)'};">${served === null ? '–' : served + '%'}</td></tr>`;
   }).join('');
   return `<div class="cs-grid">
     <div class="card">${csHeader('cco_csat', 'var(--g1)')}
-      <div class="metric-big">${csat === null ? ', ' : csat + '%'}</div>
+      <div class="metric-big">${csat === null ? '–' : csat + '%'}</div>
       <div class="meter"><div class="meter-fill" style="width:${csat || 0}%; background: var(--g1);"></div></div>
       <div class="metric-caption">${t('cco_csat_note')}</div>
     </div>
     <div class="card">${csHeader('cco_nps', 'var(--g2)')}
-      <div class="metric-big" style="color:${nps === null ? 'var(--text-0)' : nps >= 0 ? 'var(--success-glow)' : 'var(--danger-glow)'};">${nps === null ? ', ' : (nps >= 0 ? '+' : '') + nps}</div>
+      <div class="metric-big" style="color:${nps === null ? 'var(--text-0)' : nps >= 0 ? 'var(--success-glow)' : 'var(--danger-glow)'};">${nps === null ? '–' : (nps >= 0 ? '+' : '') + nps}</div>
       <div class="metric-caption">${t('cco_nps_note')}</div>
     </div>
     <div class="card span2" style="padding:0; overflow:hidden;">
@@ -3773,7 +3773,7 @@ function buildReportText() {
     '',
   ];
   sorted.forEach((g, i) => lines.push(
-    `${i + 1}. ${g.name} (${g.company || ', '}): ${t('th_profit')} ${g.totalProfit.toFixed(1)}M · ${t('th_revenue')} ${g.totalRevenue.toFixed(1)}M · ${t('th_cash')} ${g.cash.toFixed(1)}M`));
+    `${i + 1}. ${g.name} (${g.company || '–'}): ${t('th_profit')} ${g.totalProfit.toFixed(1)}M · ${t('th_revenue')} ${g.totalRevenue.toFixed(1)}M · ${t('th_cash')} ${g.cash.toFixed(1)}M`));
   return lines.join('\n');
 }
 
@@ -3787,7 +3787,7 @@ function printReport() {
   let el = document.getElementById('printReport');
   if (!el) { el = document.createElement('div'); el.id = 'printReport'; document.body.appendChild(el); }
   const rows = sorted.map((g, i) =>
-    `<tr><td>${i + 1}</td><td>${g.name}</td><td>${g.company || ', '}</td><td>${g.totalRevenue.toFixed(1)}M</td><td>${g.totalCost.toFixed(1)}M</td><td>${g.totalProfit.toFixed(1)}M</td><td>${g.cash.toFixed(1)}M</td></tr>`).join('');
+    `<tr><td>${i + 1}</td><td>${g.name}</td><td>${g.company || '–'}</td><td>${g.totalRevenue.toFixed(1)}M</td><td>${g.totalCost.toFixed(1)}M</td><td>${g.totalProfit.toFixed(1)}M</td><td>${g.cash.toFixed(1)}M</td></tr>`).join('');
   let roundRows = '';
   for (let r = 0; r < state.groups[0].rounds.length; r++) {
     roundRows += `<tr><td>${r + 1}</td>` + state.groups.map(g => `<td>${g.rounds[r].profit.toFixed(1)}M</td>`).join('') + '</tr>';
