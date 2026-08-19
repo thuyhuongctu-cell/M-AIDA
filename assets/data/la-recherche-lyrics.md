@@ -25,9 +25,9 @@ Bridge (hai giây im lặng, rồi spoken-word tiếng Pháp) ·
 Final Chorus (mật độ âm thanh tối đa, bè hợp xướng) ·
 Outro (chậm về 76 bpm, nhịp tim mờ dần).
 
-Bài hát kể lại tuyến thời gian của chương trình nghiên cứu — thạc sĩ 2021,
+Bài hát kể lại tuyến thời gian của chương trình nghiên cứu, thạc sĩ 2021,
 meta-analysis trên dữ liệu WBES, giai đoạn tại Trường Kinh tế Đại học Cần Thơ,
-đến khi M-AIDA thành hình năm 2026 — và giữ nguyên luận điểm trung tâm của
+đến khi M-AIDA thành hình năm 2026, và giữ nguyên luận điểm trung tâm của
 dự án: mô hình đề xuất, con người quyết định.
 
 ## Trạng thái phần lời trên trang

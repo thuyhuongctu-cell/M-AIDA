@@ -1,12 +1,12 @@
-# Atlas costumes — plan & tracker
+# Atlas costumes: plan & tracker
 
 Huong in each economy's national dress for the 50-economy atlas
 (`asia-atlas.html`). Each economy tile carries four distinctive features:
 
-- 🚩 **Flag** — automatic (Unicode, from the atlas data)
-- 👗 **National dress** — a Huong render dropped here (this folder)
-- 🏛️ **Symbol** — an emoji (editable default set in the atlas)
-- 🎵 **Famous song(s)** — editable defaults (Vietnam shows two)
+- 🚩 **Flag**: automatic (Unicode, from the atlas data)
+- 👗 **National dress**: a Huong render dropped here (this folder)
+- 🏛️ **Symbol**: an emoji (editable default set in the atlas)
+- 🎵 **Famous song(s)**: editable defaults (Vietnam shows two)
 
 ## File convention
 
@@ -22,7 +22,7 @@ bangladesh, pakistan, mongolia, fiji, samoa, kiribati, tonga, solomonislands,
 vanuatu, papuanewguinea, timorleste, …` (full list in `asia-atlas.html`).
 
 If a file is missing, the atlas automatically shows the default Huong figure
-with a "coming soon" note — so renders can be added incrementally, no code
+with a "coming soon" note, so renders can be added incrementally, no code
 changes needed. Send the render, it is cut out and placed here.
 
 ## Priority (economies that headline a paper)
@@ -37,13 +37,13 @@ changes needed. Send the render, it is cut out and placed here.
 | 6 | 🇫🇯 Fiji + 6 Pacific | P8 | Island dress (sulu/masi, puletasi, ta'ovala, …) | ⏳ |
 | 7 | remaining 43 economies | P7 (the 50-economy frame) | see the atlas table | ⏳ |
 
-## Proposed distinctive features — priority economies
+## Proposed distinctive features: priority economies
 
 Defaults already live in the atlas; refine songs per economy as for Vietnam.
 
-| Economy | Symbol | Dress | Famous song(s) — proposed |
+| Economy | Symbol | Dress | Famous song(s): proposed |
 |---------|--------|-------|----------------------------|
-| 🇻🇳 Vietnam | 🪷 lotus | Ao dai | *Mua xuan dau tien* (Le Hong Yen, music Van Cao); *Bonjour Vietnam* (Pham Quynh Anh) — **set** |
+| 🇻🇳 Vietnam | 🪷 lotus | Ao dai | *Mua xuan dau tien* (Le Hong Yen, music Van Cao); *Bonjour Vietnam* (Pham Quynh Anh), **set** |
 | 🇯🇵 Japan | 🗻 Fuji | Kimono | *Sakura Sakura* |
 | 🇮🇳 India | 🕌 Taj Mahal | Sari | *Vande Mataram* |
 | 🇸🇬 Singapore | 🦁 Merlion | Sarong kebaya | *Di Tanjong Katong* |
@@ -57,5 +57,5 @@ Defaults already live in the atlas; refine songs per economy as for Vietnam.
 | 🇵🇬 Papua N.G. | 🦜 | Meri blouse | *O Arise, All You Sons* |
 
 > Author to review/adjust songs and symbols; author supplies the national-dress
-> renders (each economy's own flag on the dress is fine — e.g. the Vietnam ao dai
+> renders (each economy's own flag on the dress is fine, e.g. the Vietnam ao dai
 > carries the Vietnam flag).

@@ -25,6 +25,6 @@
   "search_window": "1977-2026",
   "concept_doi": "10.5281/zenodo.21282516",
   "version_doi": "10.5281/zenodo.21282517",
-  "source_of_truth": "p6/results/table1_baseline.csv (thesis repo) — see CANONICAL_NUMBERS_P6.md",
+  "source_of_truth": "p6/results/table1_baseline.csv (thesis repo), see CANONICAL_NUMBERS_P6.md",
   "updated_at": "2026-07-20"
 }
