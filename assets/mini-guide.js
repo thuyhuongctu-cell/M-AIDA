@@ -1,5 +1,5 @@
 /*!
- * M-AIDA mini guide — a shared floating Huong AI guide button + intro bubble.
+ * M-AIDA mini guide: a shared floating Huong AI guide button + intro bubble.
  * Self-contained (no external deps). Text guide only for now; a synced voice
  * track will be added later. Bilingual VI/EN, follows the page's html[lang].
  * Include with: <script src="assets/mini-guide.js" defer></script>

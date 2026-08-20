@@ -1,5 +1,5 @@
 /*!
- * M-AIDA mini music player — shared floating theme-song player.
+ * M-AIDA mini music player: shared floating theme-song player.
  * Self-contained (no external deps). Loops the playlist and auto-advances to
  * the next track. Lyrics are the author's (Do Thuy Huong).
  * Include on a page with: <script src="assets/mini-music.js" defer></script>

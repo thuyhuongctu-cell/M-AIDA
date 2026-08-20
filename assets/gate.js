@@ -9,7 +9,7 @@
   var de = document.documentElement;
   de.style.visibility = 'hidden';
   function run(){
-    var p = window.prompt('Trang luận án chưa công bố — nhập mã truy cập\nUnpublished dissertation site — enter access code:');
+    var p = window.prompt('Trang luận án chưa công bố, nhập mã truy cập\nUnpublished dissertation site, enter access code:');
     if (p !== null && p.trim() === CODE) {
       try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
       de.style.visibility = '';
