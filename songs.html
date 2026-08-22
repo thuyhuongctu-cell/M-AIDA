@@ -143,6 +143,31 @@
   .track .tnum{font:700 .8rem var(--mono);color:var(--teal-2);width:1.6rem;text-align:center;flex:none}
   .track .tt{flex:1;min-width:0} .track .tt b{font-size:.92rem;font-weight:600;display:block} .track .tt small{color:var(--muted);font-size:.78rem}
   .track .tico{color:var(--teal-2);flex:none}
+  /* Bản được làm nổi bật: viền vàng + nhãn "mới" trong danh sách */
+  .track.feat{border-color:rgba(201,162,75,.55);background:linear-gradient(90deg,rgba(201,162,75,.10),var(--panel-2))}
+  .track.feat .tnum{color:var(--gold)}
+  .tnew{font:700 .56rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+    border:1px solid rgba(201,162,75,.5);border-radius:999px;padding:.14rem .48rem;margin-left:.45rem;vertical-align:.08em}
+
+  /* Thẻ nổi bật: bản mới nhất, đặt ngay trên danh sách bản thu */
+  .spot{position:relative;display:flex;align-items:center;gap:clamp(.8rem,2vw,1.2rem);margin:0 0 1.3rem;
+    padding:clamp(.9rem,2vw,1.1rem);border-radius:16px;border:1px solid rgba(201,162,75,.45);
+    background:linear-gradient(120deg,rgba(201,162,75,.16),var(--panel-2) 62%);
+    box-shadow:0 18px 44px -26px rgba(201,162,75,.7)}
+  .spot img{width:clamp(64px,14vw,88px);height:clamp(64px,14vw,88px);border-radius:12px;object-fit:cover;
+    object-position:top center;border:1px solid rgba(201,162,75,.4);flex:none}
+  .spot .sbody{flex:1;min-width:0}
+  .spot .skick{font:700 .6rem var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+    display:flex;align-items:center;gap:.4rem}
+  .spot .skick i{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;flex:none}
+  .spot h3{font-family:var(--serif);font-size:clamp(1rem,2.2vw,1.2rem);margin:.28rem 0 .1rem;color:var(--ink);line-height:1.24}
+  .spot p{margin:0;font-size:.8rem;color:var(--muted)}
+  .spot .splay{flex:none;width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;
+    background:var(--gold);color:#241419;display:grid;place-items:center;box-shadow:0 0 24px rgba(201,162,75,.5)}
+  .spot .splay:hover{background:var(--teal);color:#fff}
+  .spot.playing .splay{background:var(--teal);color:#fff}
+  @media(max-width:520px){.spot{flex-wrap:wrap}.spot .sbody{flex-basis:100%;order:3}}
+  @media(prefers-reduced-motion:reduce){.spot .skick i{animation:none}}
   /* Tiêu đề nhóm: các bản của cùng một bài đứng chung dưới một tên */
   .tgroup{display:flex;align-items:baseline;gap:.6rem;margin:1.1rem 0 .45rem;padding:0 .2rem}
   .tgroup:first-child{margin-top:0}
@@ -400,6 +425,7 @@
 
     <div class="arch">
       <h2><span class="vi">Bản thu</span><span class="en">The recordings</span></h2>
+      <div id="spotlight"></div>
       <div id="tracklist"></div>
       <div class="disc-note">
         <span class="vi"><b>The Heartbeat of M-AIDA (Que les preuves décident)</b>, tác phẩm chính. Nhân vật chính &amp; người kể chuyện: <b>Đỗ Thùy Hương</b> (NCS, nhà phát triển M-AIDA). Cố vấn học thuật: <b>PGS.TS. Phan Anh Tú</b>. Nơi chắp cánh: Trường Kinh tế, Đại học Cần Thơ. Hoàn thành &amp; phát hành: <b>18/07/2026</b>. Thể loại: Cinematic Electro-Pop pha Glitch Pop. Nhịp: 76→120→219→128→76 bpm. <b>Lời:</b> Đỗ Thùy Hương.</span>
@@ -448,13 +474,16 @@
 
   // Mỗi bài có thể có nhiều bản. `g` gom các bản của cùng một bài thành một nhóm
   // để danh sách hiện tiêu đề nhóm một lần, `v` là nhãn bản, và `lyr` đánh dấu
-  // bản nào có khối lời chạy đồng bộ trên trang này.
+  // bản nào có khối lời chạy đồng bộ trên trang này. `feat` đánh dấu bản được
+  // làm nổi bật: thẻ nổi bật trên đầu danh sách và nhãn "mới" trong danh sách
+  // đều đọc từ đúng một bản ghi này, nên không có chuỗi nào bị chép hai chỗ.
   var TRACKS=[
     {g:"The Heartbeat of M-AIDA (Que les preuves décident)",v:"bản chính · bản mở rộng",s:"★ TÁC PHẨM CHÍNH · bản mở rộng · 4:29",f:"assets/maida_song_official.mp3",lyr:true},
     {g:"The Heartbeat of M-AIDA (Que les preuves décident)",v:"remix 1",s:"bản phối lại · 4:08",f:"assets/maida_song_heartbeat_remix1.mp3"},
     {g:"The Heartbeat of M-AIDA (Que les preuves décident)",v:"remix 2",s:"bản phối lại · 4:04",f:"assets/maida_song_heartbeat_remix2.mp3"},
     {g:"La recherche, c'est ma passion",v:"remix 1",s:"bản phối lại · EN/FR · 4:49",f:"assets/maida_song_la_recherche_remix1.mp3"},
     {g:"La recherche, c'est ma passion",v:"remix 2",s:"bản phối lại · EN/FR · 4:49",f:"assets/maida_song_la_recherche_remix2.mp3"},
+    {g:"La recherche, c'est ma passion",v:"remix 3",s:"bản phối lại · EN/FR · 4:49",f:"assets/maida_song_la_recherche_remix3.mp3",feat:true,cover:"assets/img/huong/song_aodai.png"},
     {g:"Je m'appelle Hương – M-AIDA, mon histoire",v:"bản gốc",s:"récit · lời riêng · 3:04",f:"assets/maida_song_mon_histoire.mp3"},
     {g:"Brand Passport (Vietnam to the World)",v:"bản gốc",s:"EN/FR · 5:19",f:"assets/maida_song_brand_passport.mp3"},
     {g:"Brand Passport (Vietnam to the World)",v:"remix",s:"bản phối lại · EN/FR · 5:33",f:"assets/maida_song_brand_passport_remix.mp3"},
@@ -481,13 +510,45 @@
       h.innerHTML='<span class="tgname">'+tr.g+'</span>'+(n>1?'<span class="tgcount">'+n+' bản</span>':'');
       tl.appendChild(h); lastGroup=tr.g;
     }
-    var d=document.createElement('div'); d.className='track'; d.dataset.i=i;
-    d.innerHTML='<span class="tnum">'+(i+1)+'</span><div class="tt"><b>'+(tr.v||tr.g)+'</b><small>'+tr.s+'</small></div>'+
+    var d=document.createElement('div'); d.className='track'+(tr.feat?' feat':''); d.dataset.i=i;
+    d.innerHTML='<span class="tnum">'+(i+1)+'</span><div class="tt"><b>'+(tr.v||tr.g)+
+      (tr.feat?'<span class="tnew">mới</span>':'')+'</b><small>'+tr.s+'</small></div>'+
       '<span class="tico"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>';
     d.addEventListener('click',function(){ if(cur===i && !audio.paused){audio.pause();} else {load(i,true);} });
     tl.appendChild(d);
   });
-  function marktracks(){document.querySelectorAll('.track').forEach(function(el){el.classList.toggle('playing',+el.dataset.i===cur && !audio.paused);});}
+
+  // Thẻ nổi bật, dựng từ chính bản mang cờ `feat`. Không có bản nào mang cờ thì
+  // khối này im lặng biến mất, trang vẫn chạy như cũ.
+  var featIdx=-1; TRACKS.forEach(function(tr,i){ if(tr.feat && featIdx<0) featIdx=i; });
+  var spotEl=null;
+  if(featIdx>=0){
+    var ft=TRACKS[featIdx];
+    spotEl=document.createElement('div'); spotEl.className='spot';
+    spotEl.innerHTML=
+      '<img src="'+(ft.cover||'assets/img/huong/song_cover.jpg')+'" alt="" loading="lazy">'+
+      '<div class="sbody">'+
+        '<div class="skick"><i></i><span class="vi">Bản mới nhất</span><span class="en">Latest release</span></div>'+
+        '<h3>'+ft.g+' · '+ft.v+'</h3>'+
+        '<p>'+ft.s+'</p>'+
+      '</div>'+
+      '<button class="splay" type="button" aria-label="Play the latest release">'+
+        '<svg class="spicon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'+
+      '</button>';
+    spotEl.querySelector('.splay').addEventListener('click',function(){
+      if(cur===featIdx && !audio.paused){ audio.pause(); } else { load(featIdx,true); }
+    });
+    document.getElementById('spotlight').appendChild(spotEl);
+  }
+
+  function marktracks(){
+    document.querySelectorAll('.track').forEach(function(el){el.classList.toggle('playing',+el.dataset.i===cur && !audio.paused);});
+    if(spotEl){
+      var on=(cur===featIdx && !audio.paused);
+      spotEl.classList.toggle('playing',on);
+      spotEl.querySelector('.spicon').innerHTML=on?ICON_PAUSE:ICON_PLAY;
+    }
+  }
 
   function load(i,play){
     cur=i; var tr=TRACKS[i];
