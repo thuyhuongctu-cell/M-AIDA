@@ -45,17 +45,14 @@ phát, chứ không chỉ thêm khối mới vào trang. Đây là việc UI ri�
 trong lần cập nhật này; ba bản ghi đã phát được bình thường trong danh sách và
 tự chuyển sang bài kế tiếp khi kết thúc.
 
-## Bản được làm nổi bật trên trang
+## Về việc làm nổi bật trên trang
 
-Remix 3 mang cờ `feat:true` trong mảng `TRACKS` của `songs.html`. Cờ đó chi phối
-hai chỗ hiển thị, cả hai đều dựng bằng script từ đúng bản ghi ấy nên không có
-chuỗi nào bị chép hai nơi: thẻ "Bản mới nhất" đặt trên đầu danh sách bản thu, và
-nhãn "mới" kèm viền vàng trên dòng tương ứng trong danh sách. Muốn chuyển sang
-làm nổi bật bản khác thì dời cờ `feat` (và `cover`, nếu muốn đổi ảnh) sang bản
-đó; bỏ cờ khỏi mọi bản thì thẻ nổi bật tự biến mất, trang vẫn chạy như cũ.
+Remix 3 từng mang cờ `feat:true` khi mới thêm vào ngày 22/08/2026, nhưng **cờ đã
+được dời sang *The Scholar's Final Say* bản 6 trong cùng ngày**, theo yêu cầu của
+tác giả. Trang chỉ có một chỗ nổi bật, dành cho bản mới nhất, nên ba bản của bài
+này hiện nằm bình thường trong danh sách bản thu.
 
-Tác phẩm chính của trang vẫn là *The Heartbeat of M-AIDA*: khối lời đồng bộ, đĩa
-xoay và nút "Nghe tác phẩm chính" ở đầu trang không bị đụng tới.
+Cách cờ hoạt động được ghi ở `scholars-final-say-lyrics.md`, mục cùng tên.
 
 ## Ghi chú bản quyền
 
