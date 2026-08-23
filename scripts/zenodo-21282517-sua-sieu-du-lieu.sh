@@ -209,9 +209,24 @@ pause "Đã vào được biểu mẫu sửa chưa?"
 # ── 2 ─────────────────────────────────────────────────────────────────────
 stage "Kiểm liên kết Related works TRƯỚC khi đổi gì"
 warn "Bước này quyết định có được xoá tag v7.1.1 hay không. Đừng bỏ qua."
-say "Bản ghi đang trỏ Is supplement to tới:"
-note "  thuyhuongctu-cell/M-AIDA/tree/v7.1.1"
-say "'thuyhuongctu-cell' là tên tài khoản KHÁC với 'thuyhuongctu'."
+say ""
+say "Tên 'thuyhuongctu-cell' nằm ở BA chỗ trong bản ghi, không phải một:"
+note "  1. Related works, Is supplement to  ->  .../tree/v7.1.1"
+note "  2. Software, Repository URL (codeRepository)"
+note "  3. External resources, Available in  (Release: v7.1.1)"
+say ""
+warn "Chỗ 3 khác loại với hai chỗ trên."
+say "Nó do khối tích hợp GitHub-Zenodo sinh ra lúc bản ghi được tạo từ một"
+say "release, nên gắn với NGUỒN NẠP và thường KHÔNG sửa được trong biểu mẫu."
+note "Không sửa được chỗ 3 là kết quả BÌNH THƯỜNG, không phải hỏng."
+note "Chặng này vẫn tính là xong nếu hai chỗ đầu đã sửa."
+
+say ""
+say "Kiểm chứng đã làm sẵn ngày 23/08/2026, chỉ để tham chiếu:"
+note "  github.com/thuyhuongctu/M-AIDA/tree/v7.1.1  ->  HTTP 200, đường đúng chạy"
+note "  API GitHub hỏi 'thuyhuongctu-cell' trả: tài nguyên không tồn tại HOẶC"
+note "  không có quyền xem. Hai khả năng đó chưa tách được từ ngoài."
+say ""
 step "Tìm mục Related works, mở liên kết đó ở tab mới, đợi tải xong."
 say ""
 ask ZENODO_RELATED_STATUS "Liên kết ra cái gì (404 / khac / dung):"
@@ -231,22 +246,47 @@ else
     note "URL lưu trong bản ghi vẫn là tên cũ. Nếu sau này có người đăng ký lại"
     note "tên đó thì liên kết trỏ sang kho của họ. Bắt buộc phải sửa."
   else
-    warn "Tài khoản 'thuyhuongctu-cell' tồn tại thật và là người khác."
-    note "Bản ghi đang dẫn nguồn gốc về kho không thuộc quyền chị. Bắt buộc sửa."
+    warn "Thanh địa chỉ vẫn giữ '-cell': tên đó phân giải được và KHÔNG phải kho"
+    warn "của chị."
+    note "Bản ghi đang dẫn nguồn gốc về kho không thuộc quyền chị. Bắt buộc sửa,"
+    note "và chụp màn hình ngay trước khi sửa để mô tả cụ thể trong nhật ký OSF."
   fi
 fi
 write_env ZENODO_RELATED_HOST "$ZENODO_RELATED_HOST"
 
 say ""
-step "Sửa URL trong ô Related works thành:"
+say "Sửa lần lượt HAI chỗ đầu, cùng một giá trị:"
 note "  $CORRECT_RELATED_URL"
-if confirm "Đã sửa URL chưa?"; then
+step "Chỗ 1: ô Related works, Is supplement to."
+if confirm "Đã sửa chỗ 1 chưa?"; then
   ZENODO_RELATED_URL_FIXED="co"
 else
   ZENODO_RELATED_URL_FIXED="chua"
   SKIPPED+=("Sửa URL Related works thành $CORRECT_RELATED_URL")
 fi
 write_env ZENODO_RELATED_URL_FIXED "$ZENODO_RELATED_URL_FIXED"
+
+step "Chỗ 2: Software, Repository URL. Bỏ '/tree/v7.1.1', chỉ để tới tên kho."
+if confirm "Đã sửa chỗ 2 chưa?"; then
+  ZENODO_CODEREPO_FIXED="co"
+else
+  ZENODO_CODEREPO_FIXED="chua"
+  SKIPPED+=("Sửa Software > Repository URL sang github.com/thuyhuongctu/M-AIDA")
+fi
+write_env ZENODO_CODEREPO_FIXED "$ZENODO_CODEREPO_FIXED"
+
+say ""
+step "Chỗ 3: External resources. Thử sửa; nếu ô bị khoá thì ĐỪNG cố."
+ask ZENODO_EXTRES_FIXED "Chỗ 3 thế nào (sua-duoc / bi-khoa / khong-thay):"
+if [[ "$ZENODO_EXTRES_FIXED" != "sua-duoc" ]]; then
+  note "Đúng như dự đoán. Khối này do webhook GitHub-Zenodo sinh ra."
+  note "Hai đường xử lý, chọn sau, KHÔNG chặn chuỗi này:"
+  note "  a) nhờ hỗ trợ Zenodo sửa thủ công, hoặc"
+  note "  b) để nguyên tới khi v8.0.0 được nạp lại từ tài khoản đúng, lúc đó"
+  note "     bản ghi mới sinh khối External resources mới và đúng."
+  SKIPPED+=("External resources vẫn ghi thuyhuongctu-cell (khối tích hợp, cần Zenodo support hoặc chờ v8.0.0)")
+fi
+write_env ZENODO_EXTRES_FIXED "$ZENODO_EXTRES_FIXED"
 
 # ── 3 ─────────────────────────────────────────────────────────────────────
 stage "Điền điều kiện truy cập"
@@ -260,7 +300,10 @@ step "Tìm ô điều kiện truy cập; nó hiện ra khi chế độ tệp là
 note "Zenodo có thể gọi ô này là Conditions hoặc tên gần giống. Làm theo nghĩa."
 step "Dán nguyên văn đoạn trên."
 pause "Đã dán xong chưa?"
-write_env ZENODO_ACCESS_CONDITIONS_SET "co"
+# Gán biến rồi mới truyền: write_env chỉ ghi ra tệp, không gán vào shell.
+# Chặng 5 đọc lại biến này, nên thiếu dòng gán là abort dưới set -u.
+ZENODO_ACCESS_CONDITIONS_SET="co"
+write_env ZENODO_ACCESS_CONDITIONS_SET "$ZENODO_ACCESS_CONDITIONS_SET"
 
 # ── 4 ─────────────────────────────────────────────────────────────────────
 stage "Đổi giấy phép sang AGPL-3.0-only"
@@ -273,17 +316,49 @@ pause "Đã chọn AGPL-3.0-only chưa?"
 write_env ZENODO_LICENSE "AGPL-3.0-only"
 
 # ── 5 ─────────────────────────────────────────────────────────────────────
-stage "Giữ nguyên chế độ Restricted"
-warn "Chặng này là KIỂM, không phải đổi. Đừng chuyển sang Open."
-say "Tệp phải ở Restricted chừng nào hồ sơ đồng sở hữu với Trường chưa xong."
-step "Xác nhận mục Files vẫn đang là Restricted."
-if confirm "Files đang ở Restricted đúng không?"; then
-  :
+stage "Chốt chế độ truy cập cho khớp giấy phép vừa đặt"
+warn "Vừa đặt AGPL-3.0-only. Điều đó sinh ra một mâu thuẫn phải xử lý ngay."
+say ""
+say "AGPL chính là giấy phép BUỘC phải cung cấp mã nguồn. Khai AGPL trên một"
+say "gói không ai tải được là mâu thuẫn khó giải thích hơn cả 'Other (Not Open)'"
+say "lúc đầu. Không được rời chặng này mà để nguyên trạng đó."
+say ""
+say "Thêm một dữ kiện: mã nguồn ĐÃ công khai trên GitHub từ trước. Khoá bản sao"
+say "lưu chiểu của một thứ đã mở không bảo vệ được gì, chỉ làm hỏng chức năng"
+say "lưu chiểu của bản ghi."
+say ""
+say "Hai lối ra nhất quán, chọn một:"
+note "  mo   : chuyển Files sang Open. Bản ghi khớp giấy phép, lưu chiểu hoạt động."
+note "  khoa : giữ Restricted, NHƯNG bắt buộc đã điền điều kiện truy cập ở chặng 3"
+note "         để bản ghi tự giải thích vì sao khoá."
+say ""
+warn "Đây là quyết định về quyền, không phải thao tác kỹ thuật. Nếu chưa chắc,"
+warn "chọn 'khoa': nó giữ nguyên hiện trạng và vẫn nhất quán."
+ask ZENODO_ACCESS_RIGHT "Chọn (mo / khoa):"
+
+if [[ "$ZENODO_ACCESS_RIGHT" == "mo" ]]; then
+  step "Chuyển mục Files sang Open."
+  pause "Đã chuyển sang Open chưa?"
+  ZENODO_ACCESS_RIGHT="open"
+  note "Bản ghi nay khai AGPL-3.0-only và cho tải. Hai thứ khớp nhau."
 else
-  warn "Chuyển lại về Restricted trước khi đi tiếp."
-  pause "Đã chuyển lại chưa?"
+  ZENODO_ACCESS_RIGHT="restricted"
+  step "Xác nhận mục Files vẫn đang là Restricted."
+  if confirm "Files đang ở Restricted đúng không?"; then
+    :
+  else
+    warn "Chuyển lại về Restricted trước khi đi tiếp."
+    pause "Đã chuyển lại chưa?"
+  fi
+  if [[ "$ZENODO_ACCESS_CONDITIONS_SET" != "co" ]]; then
+    warn "CHƯA điền điều kiện truy cập ở chặng 3. Giữ khoá mà không nêu lý do là"
+    warn "đúng cái mâu thuẫn chặng này dựng ra để chặn. Quay lại điền trước."
+    SKIPPED+=("Điều kiện truy cập chưa điền, trong khi Files vẫn Restricted và giấy phép đã là AGPL-3.0-only")
+  else
+    note "Giữ khoá, nhưng bản ghi có nêu lý do. Nhất quán ở mức chấp nhận được."
+  fi
 fi
-write_env ZENODO_ACCESS_RIGHT "restricted"
+write_env ZENODO_ACCESS_RIGHT "$ZENODO_ACCESS_RIGHT"
 
 # ── 6 ─────────────────────────────────────────────────────────────────────
 stage "Publish"
@@ -305,9 +380,18 @@ write_env ZENODO_PUBLISHED "$ZENODO_PUBLISHED"
 stage "Xác minh sau khi publish, và kết luận về tag"
 open_url "$RECORD_URL"
 step "Trang bản ghi phải hiện giấy phép AGPL-3.0-only."
-step "Phần điều kiện truy cập hiện đoạn vừa dán."
+if [[ "$ZENODO_ACCESS_RIGHT" == "open" ]]; then
+  step "Mục Files cho tải được, khớp với giấy phép mở vừa đặt."
+else
+  step "Phần điều kiện truy cập hiện đoạn vừa dán, giải thích vì sao còn khoá."
+fi
 step "Mở lại liên kết Related works, lần này phải ra thẳng thuyhuongctu/M-AIDA."
 step "Chụp màn hình SAU khi sửa."
+say ""
+warn "ĐỪNG tính External resources vào bốn thứ trên."
+note "Khối đó do webhook sinh, có thể vẫn ghi '-cell'. Đó là hạn chế đã biết"
+note "của nguồn nạp, không phải việc chặng này chưa xong. Trả lời theo bốn"
+note "mục trên thôi, kẻo cổng xoá tag bị khoá nhầm."
 ask ZENODO_VERIFIED "Bốn thứ trên đã đúng cả chưa (co / chua):"
 write_env ZENODO_VERIFIED "$ZENODO_VERIFIED"
 
