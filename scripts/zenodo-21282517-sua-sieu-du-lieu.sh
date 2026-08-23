@@ -226,6 +226,10 @@ say "Kiểm chứng đã làm sẵn ngày 23/08/2026, chỉ để tham chiếu:"
 note "  github.com/thuyhuongctu/M-AIDA/tree/v7.1.1  ->  HTTP 200, đường đúng chạy"
 note "  API GitHub hỏi 'thuyhuongctu-cell' trả: tài nguyên không tồn tại HOẶC"
 note "  không có quyền xem. Hai khả năng đó chưa tách được từ ngoài."
+warn "KHÔNG công cụ tự động nào phân giải được tên đó. Đã thử hai phía, cả hai"
+warn "đều bị chặn truy cập tự động."
+note "Nên thanh địa chỉ trong trình duyệt ĐANG ĐĂNG NHẬP là bằng chứng duy nhất."
+note "Đừng suy từ việc trang tải được hay không tải được."
 say ""
 step "Tìm mục Related works, mở liên kết đó ở tab mới, đợi tải xong."
 say ""
@@ -288,6 +292,22 @@ if [[ "$ZENODO_EXTRES_FIXED" != "sua-duoc" ]]; then
 fi
 write_env ZENODO_EXTRES_FIXED "$ZENODO_EXTRES_FIXED"
 
+# Điều kiện ĐẠT của chặng này chốt ở đây, để không ai phải tự suy lúc chạy:
+# hai chỗ đầu là bắt buộc, chỗ 3 không tính.
+say ""
+if [[ "$ZENODO_RELATED_URL_FIXED" == "co" && "$ZENODO_CODEREPO_FIXED" == "co" ]]; then
+  ZENODO_CHANG2_DAT="co"
+  printf '  %s✓ Chặng 2 ĐẠT: hai chỗ sửa được đã sửa.%s\n' "$GREEN" "$RESET"
+  [[ "$ZENODO_EXTRES_FIXED" == "sua-duoc" ]] || \
+    note "Chỗ 3 còn '-cell'. Đó là hạn chế của nguồn nạp, KHÔNG trừ điểm chặng này."
+else
+  ZENODO_CHANG2_DAT="chua"
+  warn "Chặng 2 CHƯA đạt: một trong hai chỗ sửa được vẫn chưa sửa."
+  [[ "$ZENODO_RELATED_URL_FIXED" == "co" ]] || note "  thiếu: Related works"
+  [[ "$ZENODO_CODEREPO_FIXED"   == "co" ]] || note "  thiếu: Software Repository URL"
+fi
+write_env ZENODO_CHANG2_DAT "$ZENODO_CHANG2_DAT"
+
 # ── 3 ─────────────────────────────────────────────────────────────────────
 stage "Điền điều kiện truy cập"
 note "Chặng này đứng TRƯỚC chặng giấy phép có chủ ý: nếu dừng giữa chừng,"
@@ -327,14 +347,54 @@ say "Thêm một dữ kiện: mã nguồn ĐÃ công khai trên GitHub từ trư
 say "lưu chiểu của một thứ đã mở không bảo vệ được gì, chỉ làm hỏng chức năng"
 say "lưu chiểu của bản ghi."
 say ""
-say "Hai lối ra nhất quán, chọn một:"
+warn "ĐỌC DANH MỤC TỆP TRƯỚC KHI QUYẾT. Không quyết trước rồi mới xem."
+say "Quyết định này phụ thuộc gói lưu chiểu chứa GÌ, mà điều đó chỉ thấy được"
+say "khi đăng nhập. Từ bên ngoài, API Zenodo liệt kê 0 tệp vì chế độ Restricted."
+step "Mở mục Files của bản ghi, đọc hết tên tệp."
+say ""
+ask ZENODO_FILES_CONTENT "Gói chứa gì (chi-ma-nguon / co-thu-khac):"
+write_env ZENODO_FILES_CONTENT "$ZENODO_FILES_CONTENT"
+say ""
+say "Hai lối ra nhất quán:"
 note "  mo   : chuyển Files sang Open. Bản ghi khớp giấy phép, lưu chiểu hoạt động."
 note "  khoa : giữ Restricted, NHƯNG bắt buộc đã điền điều kiện truy cập ở chặng 3"
 note "         để bản ghi tự giải thích vì sao khoá."
 say ""
-warn "Đây là quyết định về quyền, không phải thao tác kỹ thuật. Nếu chưa chắc,"
-warn "chọn 'khoa': nó giữ nguyên hiện trạng và vẫn nhất quán."
+if [[ "$ZENODO_FILES_CONTENT" == "chi-ma-nguon" ]]; then
+  printf '  %s%sKHUYẾN NGHỊ: mo%s\n' "$BOLD" "$GREEN" "$RESET"
+  say "Gói chỉ chứa mã nguồn, mà mã nguồn đã công khai trên GitHub từ trước."
+  say "AGPL vốn buộc cung cấp nguồn, nên khoá bản lưu chiểu của một thứ đã mở"
+  say "không bảo vệ được gì, chỉ làm hỏng chức năng lưu chiểu."
+else
+  printf '  %s%sKHUYẾN NGHỊ: khoa%s\n' "$BOLD" "$YELLOW" "$RESET"
+  warn "Gói chứa thứ KHÔNG thuộc mã nguồn AGPL: bản thảo, dữ liệu chưa công bố,"
+  warn "hoặc dist/. Mở tệp lúc này là phát hành những thứ đó, và ít nhất một"
+  warn "trong số đó (dist/) đang mang số liệu đã bị thay thế."
+  note "Giữ khoá, và điều kiện truy cập ở chặng 3 chính là chỗ giải thích vì sao."
+fi
+say ""
+warn "Đây là quyết định về quyền, không phải thao tác kỹ thuật. Khuyến nghị ở"
+warn "trên dựa trên câu trả lời vừa rồi; quyền quyết vẫn là của người chạy."
 ask ZENODO_ACCESS_RIGHT "Chọn (mo / khoa):"
+
+if [[ "$ZENODO_ACCESS_RIGHT" == "mo" ]]; then
+  if [[ "$ZENODO_FILES_CONTENT" != "chi-ma-nguon" ]]; then
+    say ""
+    warn "DỪNG. Vừa khai gói có thứ ngoài mã nguồn, mà lại chọn mở."
+    warn "Mở tệp là PHÁT HÀNH những thứ đó dưới một DOI đã cấp. Không hoàn tác"
+    warn "được bằng cách khoá lại: ai tải trong lúc mở vẫn giữ bản sao."
+    say "Nếu trong gói có dist/ thì đó là bản đóng gói mang số liệu đã bị thay"
+    say "thế (Q, df, k) và câu khai kappa cho một quy trình chưa chạy."
+    say ""
+    if confirm "Vẫn mở, và chấp nhận phát hành toàn bộ nội dung gói?"; then
+      note "Ghi nhận là quyết định có cân nhắc, không phải bấm nhầm."
+      write_env ZENODO_MO_DU_CO_THU_KHAC "co"
+    else
+      ZENODO_ACCESS_RIGHT="khoa"
+      note "Quay về giữ khoá. Đúng lối ra an toàn."
+    fi
+  fi
+fi
 
 if [[ "$ZENODO_ACCESS_RIGHT" == "mo" ]]; then
   step "Chuyển mục Files sang Open."
@@ -406,7 +466,8 @@ ask ZENODO_FILES_LISTED "Mục Files có liệt kê tệp không (co / khong):"
 write_env ZENODO_FILES_LISTED "$ZENODO_FILES_LISTED"
 
 say ""
-if [[ "$ZENODO_PUBLISHED" == "co" && "$ZENODO_VERIFIED" == "co" && "$ZENODO_FILES_LISTED" == "co" ]]; then
+if [[ "$ZENODO_CHANG2_DAT" == "co" && "$ZENODO_PUBLISHED" == "co" \
+   && "$ZENODO_VERIFIED" == "co" && "$ZENODO_FILES_LISTED" == "co" ]]; then
   printf '  %s✓ Đủ ba điều kiện. Được phép xoá release và tag v7.1.1 trong%s\n' "$GREEN" "$RESET"
   printf '  %s  thuyhuongctu/M-AIDA.%s\n' "$GREEN" "$RESET"
   TAG_V711_AN_TOAN_DE_XOA="co"
@@ -416,6 +477,7 @@ if [[ "$ZENODO_PUBLISHED" == "co" && "$ZENODO_VERIFIED" == "co" && "$ZENODO_FILE
 else
   printf '  %s⚠ CHƯA đủ điều kiện. Đừng xoá tag v7.1.1.%s\n' "$YELLOW" "$RESET"
   TAG_V711_AN_TOAN_DE_XOA="chua"
+  [[ "$ZENODO_CHANG2_DAT"   == "co" ]] || note "  thiếu: chặng 2 chưa đạt, URL nguồn gốc vẫn sai"
   [[ "$ZENODO_PUBLISHED"    == "co" ]] || note "  thiếu: chưa publish"
   [[ "$ZENODO_VERIFIED"     == "co" ]] || note "  thiếu: chưa xác minh xong"
   [[ "$ZENODO_FILES_LISTED" == "co" ]] || note "  thiếu: bản ghi không liệt kê tệp nào"
