@@ -68,7 +68,7 @@ for page in ("index.html",):
     has_note = 'class="provisional-note"' in h
     if M.get("provisional") and not has_note:
         errors.append(f"{page}: metrics are provisional but the provisional "
-                      "note is missing: do not un-caveat before the data is ready")
+                      "note is missing — do not un-caveat before the data is ready")
     if M.get("provisional") is False and (has_note or "provisional: they belong" in h):
         errors.append(f"{page}: metrics are final but a provisional caveat "
                       "is still displayed")
