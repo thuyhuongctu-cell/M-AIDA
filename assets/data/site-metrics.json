@@ -23,7 +23,7 @@
   "q": 1902.4,
   "q_df": 285,
   "search_window": "1977-2026",
-  "concept_doi": "10.5281/zenodo.21282516",
+  "concept_doi": "10.5281/zenodo.21850575",
   "version_doi": "10.5281/zenodo.22260059",
   "source_of_truth": "p6/results/table1_baseline.csv (thesis repo), see CANONICAL_NUMBERS_P6.md",
   "updated_at": "2026-09-03",
@@ -33,5 +33,7 @@
     "10.5281/zenodo.22258783",
     "10.5281/zenodo.22258977",
     "10.5281/zenodo.22259684"
-  ]
+  ],
+  "manual_deposit_doi": "10.5281/zenodo.21282516",
+  "manual_deposit_note": "Separate Zenodo deposit of v7.1.1 made by hand on 2026-07-09 (version DOI 10.5281/zenodo.21282517). Cited by the dissertation and by the copyright-registration dossier; stays published and always resolves to v7.1.1."
 }
