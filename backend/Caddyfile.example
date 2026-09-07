@@ -1,0 +1,23 @@
+# M-AIDA — TLS + HTTP Basic auth for the whole site (frontend + /api).
+# This is the primary fix for S1: one password guards everything, the browser
+# prompts once, and NO secret ships in the Vite bundle. Put this in front of the
+# frontend container (which already proxies /api/ to the backend).
+#
+# 1) Generate a password hash:   caddy hash-password --plaintext 'YOUR-STRONG-PASSWORD'
+# 2) Paste the hash below.       3) Point maida.example.com at this host.
+
+maida.example.com {
+    encode gzip
+
+    # One PI account guards the entire site.
+    basic_auth {
+        pi   $2a$14$REPLACE_WITH_THE_HASH_FROM_caddy_hash_password
+    }
+
+    # Cap the upload body so a huge PDF can't exhaust memory (pairs with S4).
+    request_body {
+        max_size 30MB
+    }
+
+    reverse_proxy frontend:3000
+}

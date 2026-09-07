@@ -44,6 +44,7 @@ def _client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, demo: bool) -> T
     """Boot a fresh app instance bound to its own SQLite file."""
     monkeypatch.setenv("MAIDA_DB_PATH", str(tmp_path / "maida.db"))
     monkeypatch.setenv("MAIDA_DEMO_MODE", "true" if demo else "false")
+    monkeypatch.setenv("MAIDA_API_KEY", "test-secret-key")
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("LLM_API_KEY", raising=False)
 
@@ -52,7 +53,9 @@ def _client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, demo: bool) -> T
     settings_module._settings = None  # drop the cached singleton
     main = importlib.import_module("main")
     importlib.reload(main)
-    return TestClient(main.app)
+    client = TestClient(main.app)
+    client.headers.update({"X-MAIDA-Key": "test-secret-key"})
+    return client
 
 
 class EchoEngine:

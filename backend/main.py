@@ -26,14 +26,15 @@ import base64
 import csv
 import io
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 import fitz  # PyMuPDF
-from fastapi import FastAPI, HTTPException, Query, UploadFile
+from fastapi import Depends, FastAPI, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
+from auth import require_pi
 from engines import make_engine
 from extractor import EvidenceMissingError, StatisticalExtractor
 from models import ExtractedEffect, ExtractionRequest, StudyDatabaseEntry, VerificationDecision
@@ -43,6 +44,9 @@ from store import StudyStore
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+MAX_PDF_BYTES = 25 * 1024 * 1024
+MAX_B64_CHARS = 34 * 1024 * 1024
 
 # ---------------------------------------------------------------------------
 # App & middleware
@@ -59,7 +63,7 @@ settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -151,7 +155,7 @@ def _machine_proposal_snapshot(effect) -> dict:
     return {k: dump.get(k) for k in keep}
 
 
-@app.post("/api/extract", response_model=StudyDatabaseEntry, tags=["extraction"])
+@app.post("/api/extract", response_model=StudyDatabaseEntry, tags=["extraction"], dependencies=[Depends(require_pi)])
 def extract_pdf(request: ExtractionRequest) -> StudyDatabaseEntry:
     """Accept a Base64-encoded PDF and return an extracted effect-size record.
 
@@ -165,6 +169,9 @@ def extract_pdf(request: ExtractionRequest) -> StudyDatabaseEntry:
     answer a real upload with an invented record (finding E1). Records whose
     statistics arrive without verbatim evidence are rejected with 422.
     """
+    if len(request.pdf_content) > MAX_B64_CHARS:
+        raise HTTPException(status_code=413, detail="PDF payload too large.")
+
     # Decode PDF bytes
     try:
         pdf_bytes = base64.b64decode(request.pdf_content)
@@ -172,6 +179,12 @@ def extract_pdf(request: ExtractionRequest) -> StudyDatabaseEntry:
         raise HTTPException(
             status_code=400, detail=f"Invalid Base64 PDF content: {exc}"
         ) from exc
+
+    if len(pdf_bytes) > MAX_PDF_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"PDF exceeds the {MAX_PDF_BYTES // (1024 * 1024)} MB limit.",
+        )
 
     # Extract plain text with PyMuPDF
     try:
@@ -209,7 +222,7 @@ def extract_pdf(request: ExtractionRequest) -> StudyDatabaseEntry:
     return entry
 
 
-@app.post("/api/extract/upload", response_model=StudyDatabaseEntry, tags=["extraction"])
+@app.post("/api/extract/upload", response_model=StudyDatabaseEntry, tags=["extraction"], dependencies=[Depends(require_pi)])
 async def extract_pdf_upload(
     file: UploadFile,
     title: str = Query(""),
@@ -225,6 +238,11 @@ async def extract_pdf_upload(
     pdf_bytes = await file.read()
     if not pdf_bytes:
         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+    if len(pdf_bytes) > MAX_PDF_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"PDF exceeds the {MAX_PDF_BYTES // (1024 * 1024)} MB limit.",
+        )
 
     encoded = base64.b64encode(pdf_bytes).decode()
     metadata = {
@@ -273,6 +291,7 @@ def list_studies(
     "/api/studies/export/csv",
     response_class=StreamingResponse,
     tags=["studies"],
+    dependencies=[Depends(require_pi)],
 )
 def export_csv() -> StreamingResponse:
     """Stream a CSV of all PI-verified and locked studies.
@@ -346,6 +365,7 @@ def get_study(study_id: str) -> StudyDatabaseEntry:
     "/api/studies/{study_id}/verify",
     response_model=StudyDatabaseEntry,
     tags=["verification"],
+    dependencies=[Depends(require_pi)],
 )
 def verify_study(study_id: str, decision: VerificationDecision) -> StudyDatabaseEntry:
     """Apply PI field overrides and approval status to a study.
@@ -397,6 +417,7 @@ def verify_study(study_id: str, decision: VerificationDecision) -> StudyDatabase
     "/api/studies/{study_id}/lock",
     response_model=StudyDatabaseEntry,
     tags=["verification"],
+    dependencies=[Depends(require_pi)],
 )
 def lock_study(study_id: str) -> StudyDatabaseEntry:
     """Permanently lock a study record.
@@ -427,7 +448,7 @@ def lock_study(study_id: str) -> StudyDatabaseEntry:
 
     data = entry.model_dump()
     data["pi_locked"] = True
-    data["locked_at"] = datetime.utcnow()
+    data["locked_at"] = datetime.now(timezone.utc)
     locked = StudyDatabaseEntry(**data)
     _studies.put(locked)
     return locked
@@ -438,7 +459,7 @@ def lock_study(study_id: str) -> StudyDatabaseEntry:
 # ---------------------------------------------------------------------------
 
 
-@app.post("/api/notion/sync", tags=["notion"])
+@app.post("/api/notion/sync", tags=["notion"], dependencies=[Depends(require_pi)])
 def notion_sync() -> dict[str, Any]:
     """Push all PI-locked studies to the configured Notion database.
 

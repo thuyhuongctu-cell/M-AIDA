@@ -41,6 +41,11 @@ class Settings(BaseSettings):
 
     notion_token: str = ""
     notion_database_id: str = ""
+
+    # Shared secret gating the sensitive API routes (extract / verify / lock /
+    # export / notion-sync). Empty = those routes are DISABLED (fail closed).
+    maida_api_key: str = ""
+
     maida_port: int = 8765
 
     # Path of the SQLite file backing the study store. Records used to live in

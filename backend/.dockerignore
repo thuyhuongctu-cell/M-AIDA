@@ -1,0 +1,16 @@
+# Keep secrets, local data, and backups OUT of the image.
+# Docker does NOT read .gitignore, so this file is what stops `COPY . .`
+# from baking backend/.env (real LLM key) and maida.db (coded data) into a layer.
+.env
+*.env
+!.env.example
+!.env.production.example
+*.db
+*.db-wal
+*.db-shm
+*.bak
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/

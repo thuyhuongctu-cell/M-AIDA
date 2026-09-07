@@ -140,6 +140,7 @@ class TestGovernanceApi:
     @pytest.fixture()
     def client(self, monkeypatch):
         app_module._studies.clear()
+        monkeypatch.setattr(app_module.settings, "maida_api_key", "test-secret-key", raising=False)
         monkeypatch.setattr(
             app_module,
             "_get_extractor",
@@ -147,7 +148,9 @@ class TestGovernanceApi:
                 engine=FakeEngine({"effect_r": 0.25, "sample_n": 50, **DEFAULT_EVIDENCE})
             ),
         )
-        return TestClient(app_module.app)
+        c = TestClient(app_module.app)
+        c.headers.update({"X-MAIDA-Key": "test-secret-key"})
+        return c
 
     def _make_entry(self, client):
         import base64

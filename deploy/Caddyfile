@@ -1,0 +1,17 @@
+# M-AIDA — TLS + HTTP Basic auth (primary fix for S1). Caddy gets a real cert
+# automatically for a public domain. Fill in TWO things: the domain, and the
+# password hash from:   caddy hash-password --plaintext 'YOUR-STRONG-PASSWORD'
+
+maida.example.com {                 # <-- (1) your real domain
+    encode gzip
+
+    basic_auth {
+        pi  $2a$14$REPLACE_WITH_HASH  # <-- (2) paste the caddy hash-password output
+    }
+
+    request_body {
+        max_size 30MB               # caps uploads (pairs with the backend S4 limit)
+    }
+
+    reverse_proxy frontend:3000
+}
